@@ -6,7 +6,7 @@ from django.contrib import messages
 from .forms import CustomerRegisterForm, LoginForm
 from .decorators import customer_required, staff_required, manager_required
 
-
+from orders.models import Order
 
 def register_view(request):
     if request.user.is_authenticated:
@@ -61,37 +61,26 @@ def logout_view(request):
 
 
 @login_required
-@customer_required
-def customer_dashboard(request):
-    return render(request, 'accounts/customer_dashboard.html')
+def dashboard(request):
+    # Redirect staff users to staff dashboard
+    if request.user.is_staff:
+        return redirect('staff_dashboard')
 
-@login_required
-@staff_required
-def staff_dashboard(request):
-    # Example: show pending orders
-    from orders.models import Order
-    pending_orders = Order.objects.filter(status='PENDING')
-    return render(request, 'accounts/staff_dashboard.html', {'pending_orders': pending_orders})
-
-@login_required
-@manager_required
-def manager_dashboard(request):
-    # Example: show all orders + staff
-    from orders.models import Order
-    from django.contrib.auth.models import User
-    staff_users = User.objects.filter(role='STAFF')
-    all_orders = Order.objects.all()
-    return render(request, 'accounts/manager_dashboard.html', {
-        'all_orders': all_orders,
-        'staff_users': staff_users
+    # Normal user: show their orders
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'accounts/dashboard/dashboard.html', {
+        'orders': orders
     })
 
+
 @login_required
-def login_redirect(request):
-    if request.user.role == 'CUSTOMER':
-        return redirect('customer_dashboard')
-    elif request.user.role == 'STAFF':
-        return redirect('staff_dashboard')
-    elif request.user.role == 'MANAGER':
-        return redirect('manager_dashboard')
-    return redirect('home')  # fallback
+def staff_dashboard(request):
+    if not request.user.is_staff:
+        messages.error(request, "You are not authorized to access this page.")
+        return redirect('dashboard')
+
+    # Staff can see all orders
+    orders = Order.objects.all().order_by('-created_at')
+    return render(request, 'accounts/dashboard/staff_dashboard.html', {
+        'orders': orders
+    })
