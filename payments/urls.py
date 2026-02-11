@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import create_payment_intent
+from . import views
 
 urlpatterns = [
-    path('create/<int:order_id>/', create_payment_intent, name='create_payment'),
+    path('create/<int:order_id>/', views.create_payment_intent, name='create_payment'),
 ]
