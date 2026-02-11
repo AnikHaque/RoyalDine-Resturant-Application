@@ -78,10 +78,19 @@ def dashboard(request):
 @login_required
 def staff_dashboard(request):
     if not request.user.is_staff:
-        messages.error(request, "You are not authorized.")
+        messages.error(request, "You are not authorized to access this page.")
         return redirect('dashboard')
-    orders = Order.objects.all().order_by('-created_at')
-    return render(request, 'accounts/dashboard/staff_dashboard.html', {'orders': orders})
+
+    status_filter = request.GET.get('status')
+    if status_filter in ['PAID', 'PENDING']:
+        orders = Order.objects.filter(status=status_filter).order_by('-created_at')
+    else:
+        orders = Order.objects.all().order_by('-created_at')
+
+    return render(request, 'accounts/dashboard/staff_dashboard.html', {
+        'orders': orders
+    })
+
 
 @login_required
 def manager_dashboard(request):
