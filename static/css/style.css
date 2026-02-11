@@ -1,0 +1,48 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff;
+}
+
+/* Navbar */
+.custom-nav {
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(10px);
+}
+
+.navbar-brand {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+}
+
+/* Hero */
+.hero {
+  height: 100vh;
+  background: url("/static/images/hero.jpg") center/cover no-repeat;
+  position: relative;
+}
+
+.hero .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+
+.hero-content {
+  position: relative;
+  max-width: 600px;
+}
+
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 64px;
+  line-height: 1.2;
+}
+
+.hero h1 span {
+  color: #ffc107;
+}
+
+.hero p {
+  font-size: 18px;
+  margin-top: 15px;
+}
