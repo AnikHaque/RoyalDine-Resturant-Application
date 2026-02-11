@@ -31,7 +31,7 @@
             <td>{{ order.id }}</td>
             <td>{{ order.user.username }}</td>
             <td>${{ order.total_price }}</td>
-            <td>{{ order.status }}</td>
+            <td >{{ order.status }}</td>
             <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
             <td>
                 {% if order.status != "PAID" %}
