@@ -7,6 +7,7 @@ from .forms import CustomerRegisterForm, LoginForm
 from .decorators import staff_required, manager_required
 
 
+
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('menu')
@@ -14,9 +15,9 @@ def register_view(request):
     if request.method == 'POST':
         form = CustomerRegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
 
-            # 👇 ensure customer is NOT staff
+            # 🔒 ensure public register = customer
             user.is_staff = False
             user.save()
 
@@ -24,11 +25,12 @@ def register_view(request):
             messages.success(request, 'Account created successfully')
             return redirect('menu')
         else:
-            messages.error(request, 'Please fix the errors below')
+            messages.error(request, 'Please correct the errors below')
     else:
         form = CustomerRegisterForm()
 
     return render(request, 'auth/register.html', {'form': form})
+
 
 
 
@@ -49,8 +51,6 @@ def login_view(request):
 
     return render(request, 'auth/login.html', {'form': form})
 
-
-
 @login_required
 def logout_view(request):
     logout(request)
@@ -59,10 +59,10 @@ def logout_view(request):
 
 
 
+
 @login_required
 def user_dashboard(request):
     return render(request, 'accounts/user_dashboard.html')
-
 
 
 @staff_required
@@ -70,7 +70,8 @@ def staff_dashboard(request):
     return render(request, 'accounts/staff_dashboard.html')
 
 
-
 @manager_required
 def manager_dashboard(request):
     return render(request, 'accounts/manager_dashboard.html')
+
+

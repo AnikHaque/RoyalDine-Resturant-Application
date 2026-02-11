@@ -31,15 +31,32 @@
           <li class="nav-item">
             <a class="btn btn-warning ms-3" href="#">Order Now</a>
           </li>
-          {% if user.is_authenticated %}
+         {% if user.is_authenticated %}
+  
+  {% if user.is_staff %}
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'staff_dashboard' %}">
+        Staff Panel
+      </a>
+    </li>
+  {% else %}
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'user_dashboard' %}">
+        My Account
+      </a>
+    </li>
+  {% endif %}
+
   <li class="nav-item">
     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
   </li>
+
 {% else %}
   <li class="nav-item">
     <a class="nav-link" href="{% url 'login' %}">Login</a>
   </li>
 {% endif %}
+
 
         </ul>
       </div>

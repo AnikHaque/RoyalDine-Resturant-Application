@@ -108,7 +108,7 @@ body {
 
 .auth-wrapper {
   min-height: 100vh;
-  background: #f8f9fa;
+  background: linear-gradient(135deg, #0f0f0f, #1f1f1f);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,33 +116,42 @@ body {
 
 .auth-box {
   display: flex;
-  width: 900px;
+  width: 960px;
   background: #fff;
-  border-radius: 20px;
+  border-radius: 22px;
   overflow: hidden;
-  box-shadow: 0 40px 100px rgba(0,0,0,.15);
+  box-shadow: 0 40px 120px rgba(0,0,0,.35);
 }
 
 .auth-left {
-  width: 50%;
-  background: linear-gradient(135deg, #000, #2c2c2c);
+  width: 45%;
+  background: linear-gradient(135deg, #000, #2a2a2a);
   color: #fff;
   padding: 60px;
 }
 
 .auth-left h2 {
   font-family: 'Playfair Display', serif;
+  font-size: 40px;
 }
 
 .auth-right {
-  width: 50%;
+  width: 55%;
   padding: 60px;
 }
 
-.auth-right input {
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group input {
   width: 100%;
-  padding: 14px;
-  margin-top: 14px;
+  padding: 13px 15px;
   border-radius: 10px;
   border: 1px solid #ddd;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #ffc107;
 }
