@@ -1,8 +1,8 @@
 from django.urls import path
-from .views import login_view, register_view, logout_view
+from . import views   # ✅ এই লাইনটাই missing ছিল
 
 urlpatterns = [
-    path('login/', login_view, name='login'),
-    path('register/', register_view, name='register'),
-    path('logout/', logout_view, name='logout'),
+    path('dashboard/', views.user_dashboard, name='user_dashboard'),
+    path('staff/', views.staff_dashboard, name='staff_dashboard'),
+    path('manager/', views.manager_dashboard, name='manager_dashboard'),
 ]
