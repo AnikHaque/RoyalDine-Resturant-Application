@@ -1,5 +1,39 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<h2>Staff Area</h2>
-<p>Only staff can see this page.</p>
+<div class="container mt-5">
+    <h2 class="mb-4">Staff Dashboard</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4>Pending Orders</h4>
+            {% if pending_orders %}
+            <table class="table table-hover mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in pending_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.user.username }}</td>
+                        <td>${{ order.total_price }}</td>
+                        <td>
+                            <a href="#" class="btn btn-success btn-sm">Mark as Paid</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p>No pending orders.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
 {% endblock %}
