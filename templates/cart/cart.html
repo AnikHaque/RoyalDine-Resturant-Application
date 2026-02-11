@@ -2,40 +2,167 @@
 {% block title %}Your Cart{% endblock %}
 
 {% block content %}
+<style>
+  .cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff9f0;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: transform 0.3s;
+    position: relative;
+  }
+
+  .cart-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+  }
+
+  .cart-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-right: 15px;
+  }
+
+  .cart-info h5 {
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: #ff9800;
+  }
+
+  .cart-info p {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .qty-control {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ffe0b2;
+    border-radius: 12px;
+    overflow: hidden;
+    width: max-content;
+  }
+
+  .qty-control a {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    color: #ff9800;
+    background: #fff7e6;
+    transition: 0.2s;
+  }
+
+  .qty-control a:hover {
+    background: #ffecb3;
+  }
+
+  .qty-control span {
+    width: 40px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .cart-item .remove {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #d32f2f;
+    font-size: 18px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .cart-item .remove:hover {
+    color: #b71c1c;
+  }
+
+  .cart-summary {
+    background: #fff9f0;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  }
+
+  .cart-summary h4 {
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #ff9800;
+  }
+
+  .cart-summary h3 {
+    font-weight: 700;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .btn-warning {
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    border: none;
+    padding: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: 0.3s;
+    color: #fff;
+  }
+
+  .btn-warning:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(255, 152, 0, 0.4);
+  }
+
+  @media(max-width: 900px) {
+    .cart-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .qty-control {
+      margin-top: 10px;
+    }
+  }
+</style>
+
 <section class="py-5 mt-5">
   <div class="container">
     <h2 class="mb-4">Your Cart</h2>
 
     {% if cart %}
-      <div class="row">
-        <div class="col-md-8">
+      <div class="row g-4">
+        <div class="col-lg-8">
           {% for id, item in cart.items %}
             <div class="cart-item mb-3">
-              <img src="{{ item.image }}" alt="">
+              <img src="{{ item.image }}" alt="{{ item.name }}">
               <div class="cart-info">
                 <h5>{{ item.name }}</h5>
                 <p>${{ item.price }}</p>
-
                 <div class="qty-control">
                   <a href="{% url 'update_cart' id 'decrease' %}">−</a>
                   <span>{{ item.qty }}</span>
                   <a href="{% url 'update_cart' id 'increase' %}">+</a>
                 </div>
               </div>
-
               <a href="{% url 'remove_from_cart' id %}" class="remove">✕</a>
             </div>
           {% endfor %}
         </div>
 
-        <div class="col-md-4">
+        <div class="col-lg-4">
           <div class="cart-summary">
             <h4>Total</h4>
             <h3>${{ total }}</h3>
-           <a href="{% url 'checkout' %}" class="btn btn-warning w-100 mt-3">
-  Proceed to Checkout
-</a>
-
+            <a href="{% url 'checkout' %}" class="btn btn-warning w-100 mt-3">
+              Proceed to Checkout
+            </a>
           </div>
         </div>
       </div>

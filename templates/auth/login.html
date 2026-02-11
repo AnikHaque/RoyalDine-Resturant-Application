@@ -1,15 +1,153 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<style>
+  body {
+
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .auth-wrapper {
+    width: 100%;
+    max-width: 1100px;
+    padding: 20px;
+  }
+
+  .auth-box {
+    display: flex;
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ffffff;
+   
+  }
+
+  /* LEFT IMAGE SIDE */
+  .auth-left {
+    flex: 1;
+    background: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f') center/cover no-repeat;
+    position: relative;
+  }
+
+  .auth-left::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,193,7,0.85), rgba(255,160,0,0.85));
+  }
+
+  .auth-left-content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    color: white;
+    z-index: 2;
+  }
+
+  .auth-left-content h2 {
+    font-size: 34px;
+    font-weight: 700;
+  }
+
+  .auth-left-content p {
+    font-size: 16px;
+    opacity: 0.9;
+  }
+
+  /* RIGHT FORM SIDE */
+  .auth-right {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .auth-right h3 {
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #ff9800;
+  }
+
+  /* Gorgeous Inputs */
+  .auth-right input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #ffe0b2;
+    background: #fffdf7;
+    transition: all 0.3s ease;
+    font-size: 15px;
+  }
+
+  .auth-right input:focus {
+    border-color: #ff9800;
+    background: #fff8e1;
+    box-shadow: 0 0 0 4px rgba(255,152,0,0.2);
+    outline: none;
+  }
+
+  .mb-3 {
+    margin-bottom: 20px;
+  }
+
+  /* Button */
+  .btn-warning {
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    border: none;
+    padding: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: 0.3s;
+    color: #fff;
+  }
+
+  .btn-warning:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(255, 152, 0, 0.4);
+  }
+
+  .errorlist {
+    color: red;
+    font-size: 13px;
+    margin-top: 6px;
+    list-style: none;
+    padding: 0;
+  }
+
+  @media(max-width: 900px) {
+    .auth-box {
+      flex-direction: column;
+    }
+
+    .auth-left {
+      height: 250px;
+    }
+
+    .auth-right {
+      padding: 40px;
+    }
+  }
+</style>
+
 <section class="auth-wrapper">
   <div class="auth-box">
 
+    <!-- LEFT IMAGE -->
     <div class="auth-left">
-      <h2>Welcome Back</h2>
-      <p>Login to continue ordering</p>
+      <div class="auth-left-content">
+        <h2>Welcome Back 👋</h2>
+        <p>Login to continue ordering your favorite items.</p>
+      </div>
     </div>
 
+    <!-- RIGHT FORM -->
     <div class="auth-right">
+      <h3>Login to Your Account</h3>
+
       <form method="post">
         {% csrf_token %}
         {{ form.non_field_errors }}
@@ -21,7 +159,9 @@
           </div>
         {% endfor %}
 
-        <button class="btn btn-warning w-100">Login</button>
+        <button class="btn btn-warning w-100">
+          Login
+        </button>
       </form>
     </div>
 

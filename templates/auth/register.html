@@ -1,14 +1,163 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #fff8e1, #ffe082);
+  }
+
+  .auth-wrapper {
+    width: 100%;
+    max-width: 1100px;
+    padding: 20px;
+  }
+
+  .auth-box {
+    display: flex;
+    border-radius: 20px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+  }
+
+  /* LEFT SIDE IMAGE */
+  .auth-left {
+    flex: 1;
+    background: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836') center/cover no-repeat;
+    position: relative;
+  }
+
+  .auth-left::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,193,7,0.85), rgba(255,160,0,0.85));
+  }
+
+  .auth-left-content {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    color: white;
+    z-index: 2;
+  }
+
+  .auth-left-content h2 {
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  .auth-left-content p {
+    font-size: 15px;
+    opacity: 0.9;
+  }
+
+  /* RIGHT SIDE FORM */
+  .auth-right {
+    flex: 1;
+    padding: 60px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .auth-right h4 {
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #ff9800;
+  }
+
+  /* Gorgeous Inputs */
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .auth-right input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid #ffe0b2;
+    background: #fffdf7;
+    transition: all 0.3s ease;
+    font-size: 14px;
+  }
+
+  .auth-right input:focus {
+    border-color: #ff9800;
+    background: #fff8e1;
+    box-shadow: 0 0 0 4px rgba(255,152,0,0.2);
+    outline: none;
+  }
+
+  .errorlist {
+    color: #d32f2f;
+    font-size: 13px;
+    margin-top: 5px;
+    list-style: none;
+    padding: 0;
+  }
+
+  /* Button */
+  .btn-warning {
+    background: linear-gradient(135deg, #ffc107, #ff9800);
+    border: none;
+    padding: 14px;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: 0.3s;
+    color: #fff;
+  }
+
+  .btn-warning:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(255, 152, 0, 0.4);
+  }
+
+  .auth-right a {
+    color: #ff9800;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .auth-right a:hover {
+    text-decoration: underline;
+  }
+
+  @media(max-width: 900px) {
+    .auth-box {
+      flex-direction: column;
+    }
+
+    .auth-left {
+      height: 250px;
+    }
+
+    .auth-right {
+      padding: 40px;
+    }
+  }
+</style>
+
 <section class="auth-wrapper">
   <div class="auth-box">
 
+    <!-- LEFT IMAGE -->
     <div class="auth-left">
-      <h2>Join Our Restaurant</h2>
-      <p>Order premium food crafted by expert chefs</p>
+      <div class="auth-left-content">
+        <h2>Join Our Restaurant 🍽</h2>
+        <p>Order premium food crafted by expert chefs.</p>
+      </div>
     </div>
 
+    <!-- RIGHT FORM -->
     <div class="auth-right">
       <h4>Create Account</h4>
 
@@ -16,15 +165,24 @@
         {% csrf_token %}
         {{ form.non_field_errors }}
 
-        {% for field in form %}
-          <div class="form-group">
-            {{ field.label_tag }}
-            {{ field }}
-            {{ field.errors }}
-          </div>
-        {% endfor %}
+      {% for field in form %}
+  <div class="form-group">
+    <label for="{{ field.id_for_label }}">
+      {{ field.label }}
+    </label>
 
-        <button class="btn btn-warning w-100 mt-3">
+    {{ field }}
+
+    {% if field.errors %}
+      <div class="errorlist">
+        {{ field.errors }}
+      </div>
+    {% endif %}
+  </div>
+{% endfor %}
+
+
+        <button class="btn btn-warning w-100 mt-2">
           Create Account
         </button>
       </form>
