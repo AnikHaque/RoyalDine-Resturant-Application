@@ -7,9 +7,10 @@
     <h2>Pay ${{ order.total_price }}</h2>
 
     <div id="card-element" class="mt-3"></div>
-    <button id="pay-btn" class="btn btn-warning mt-4">
-      Pay Now
-    </button>
+    <a href="{% url 'stripe_checkout' order.id %}" class="btn btn-success">
+    Pay Now
+</a>
+
   </div>
 </section>
 

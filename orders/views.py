@@ -37,7 +37,10 @@ def checkout_view(request):
 @login_required
 def payment_page(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, 'orders/payment.html', {'order': order})
+
+    # Stripe checkout এ redirect
+    return redirect('create_payment', order_id=order.id)
+
 
 @login_required
 def payment_success(request):
