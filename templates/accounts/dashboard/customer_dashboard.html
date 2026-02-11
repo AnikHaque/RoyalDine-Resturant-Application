@@ -1,34 +1,112 @@
-{% extends "accounts/dashboard/base_dashboard.html" %}
+{% extends 'accounts/dashboard/base_dashboard.html' %}
+
+{% block title %}Customer Dashboard{% endblock %}
 
 {% block sidebar %}
-<a href="{% url 'dashboard' %}">My Orders</a>
-<a href="{% url 'menu' %}">Menu</a>
+<ul class="sidebar-menu">
+    <li><a href="{% url 'customer_dashboard' %}">My Orders</a></li>
+    <!-- আরও links দিতে পারো -->
+</ul>
 {% endblock %}
 
 {% block content %}
-<h2>My Orders</h2>
+<style>
+/* Sidebar styling */
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+.sidebar-menu li {
+    margin-bottom: 10px;
+}
+.sidebar-menu li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+.sidebar-menu li a:hover {
+    color: #007BFF;
+}
+
+/* Table styling */
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+}
+.orders-table th, .orders-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+.orders-table th {
+    background-color: #007BFF;
+    color: #fff;
+}
+.orders-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+.orders-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Status badges */
+.status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+.status.pending {
+    background-color: #ffc107; /* yellow */
+}
+.status.paid {
+    background-color: #28a745; /* green */
+}
+.status.cancelled {
+    background-color: #dc3545; /* red */
+}
+</style>
+<h1>My Orders</h1>
+
 {% if orders %}
-<table class="table table-striped">
+<table class="orders-table">
     <thead>
         <tr>
-            <th>ID</th>
+            <th>Order ID</th>
             <th>Total Price</th>
             <th>Status</th>
             <th>Date</th>
         </tr>
     </thead>
     <tbody>
-        {% for order in orders %}
+    {% for order in orders %}
         <tr>
             <td>{{ order.id }}</td>
             <td>${{ order.total_price }}</td>
-            <td>{{ order.status }}</td>
-            <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+            <td>
+                {% if order.status == "PENDING" %}
+                    <span class="status pending">{{ order.status }}</span>
+                {% elif order.status == "PAID" %}
+                    <span class="status paid">{{ order.status }}</span>
+                {% else %}
+                    <span class="status cancelled">{{ order.status }}</span>
+                {% endif %}
+            </td>
+            <td>{{ order.created_at|date:"d M Y H:i" }}</td>
         </tr>
-        {% endfor %}
+    {% endfor %}
     </tbody>
 </table>
 {% else %}
 <p>You have no orders yet.</p>
 {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+
 {% endblock %}

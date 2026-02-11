@@ -43,11 +43,12 @@ def login_view(request):
         if form.is_valid():
             login(request, form.get_user())
             messages.success(request, 'Logged in successfully')
+
             # Redirect based on role
             if request.user.is_staff:
                 return redirect('staff_dashboard')
             else:
-                return redirect('dashboard')
+                return redirect('home')
         else:
             messages.error(request, 'Invalid username or password')
     else:
@@ -74,6 +75,14 @@ def dashboard(request):
     # normal customer
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'accounts/dashboard/customer_dashboard.html', {'orders': orders})
+
+@login_required
+def customer_dashboard(request):
+    # Normal user orders
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'accounts/dashboard/customer_dashboard.html', {
+        'orders': orders
+    })
 
 @login_required
 def staff_dashboard(request):
