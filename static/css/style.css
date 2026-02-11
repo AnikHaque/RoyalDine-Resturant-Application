@@ -104,3 +104,45 @@ body {
   font-size: 14px;
   color: #666;
 }
+
+
+.auth-wrapper {
+  min-height: 100vh;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-box {
+  display: flex;
+  width: 900px;
+  background: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,.15);
+}
+
+.auth-left {
+  width: 50%;
+  background: linear-gradient(135deg, #000, #2c2c2c);
+  color: #fff;
+  padding: 60px;
+}
+
+.auth-left h2 {
+  font-family: 'Playfair Display', serif;
+}
+
+.auth-right {
+  width: 50%;
+  padding: 60px;
+}
+
+.auth-right input {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}

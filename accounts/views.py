@@ -1,44 +1,35 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from django.contrib.auth import login, logout
 from django.contrib import messages
+
+from .forms import CustomerRegisterForm, LoginForm
+
 
 def register_view(request):
     if request.method == 'POST':
-        name = request.POST['name']
-        email = request.POST['email']
-        password = request.POST['password']
+        form = CustomerRegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('menu')
+    else:
+        form = CustomerRegisterForm()
 
-        if User.objects.filter(username=email).exists():
-            messages.error(request, 'User already exists')
-            return redirect('register')
-
-        user = User.objects.create_user(
-            username=email,
-            email=email,
-            first_name=name,
-            password=password
-        )
-        login(request, user)
-        return redirect('menu')
-
-    return render(request, 'auth/register.html')
+    return render(request, 'auth/register.html', {'form': form})
 
 
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-
-        user = authenticate(request, username=email, password=password)
-        if user:
-            login(request, user)
+        form = LoginForm(request, data=request.POST)
+        if form.is_valid():
+            login(request, form.get_user())
             return redirect('menu')
+        else:
+            messages.error(request, 'Invalid credentials')
+    else:
+        form = LoginForm()
 
-        messages.error(request, 'Invalid credentials')
-        return redirect('login')
-
-    return render(request, 'auth/login.html')
+    return render(request, 'auth/login.html', {'form': form})
 
 
 def logout_view(request):

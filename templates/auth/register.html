@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="auth-wrapper">
+  <div class="auth-box">
+    <div class="auth-left">
+      <h2>Join Our Kitchen</h2>
+      <p>Order premium food crafted by experts</p>
+    </div>
+
+    <div class="auth-right">
+      <h4>Create Account</h4>
+
+      <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password1" placeholder="Password" required>
+        <input type="password" name="password2" placeholder="Confirm Password" required>
+
+        <button class="btn btn-warning w-100 mt-3">Create Account</button>
+      </form>
+
+      <p class="mt-3">
+        Already have an account?
+        <a href="{% url 'login' %}">Login</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
