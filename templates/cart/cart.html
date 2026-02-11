@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+<section class="py-5 mt-5">
+  <div class="container">
+    <h2 class="mb-4">Your Cart</h2>
+
+    {% if cart %}
+      <div class="row">
+        <div class="col-md-8">
+          {% for id, item in cart.items %}
+            <div class="cart-item mb-3">
+              <img src="{{ item.image }}" alt="">
+              <div class="cart-info">
+                <h5>{{ item.name }}</h5>
+                <p>${{ item.price }}</p>
+
+                <div class="qty-control">
+                  <a href="{% url 'update_cart' id 'decrease' %}">−</a>
+                  <span>{{ item.qty }}</span>
+                  <a href="{% url 'update_cart' id 'increase' %}">+</a>
+                </div>
+              </div>
+
+              <a href="{% url 'remove_from_cart' id %}" class="remove">✕</a>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="col-md-4">
+          <div class="cart-summary">
+            <h4>Total</h4>
+            <h3>${{ total }}</h3>
+           <a href="{% url 'checkout' %}" class="btn btn-warning w-100 mt-3">
+  Proceed to Checkout
+</a>
+
+          </div>
+        </div>
+      </div>
+    {% else %}
+      <p>Your cart is empty.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

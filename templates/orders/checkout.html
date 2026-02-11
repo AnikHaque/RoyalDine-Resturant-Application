@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<section class="py-5 mt-5">
+  <div class="container">
+    <h2 class="mb-4">Checkout</h2>
+
+    <div class="row">
+      <div class="col-md-8">
+        {% for item in cart.values %}
+          <div class="cart-item mb-3">
+            <h5>{{ item.name }}</h5>
+            <p>${{ item.price }} × {{ item.qty }}</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <div class="col-md-4">
+        <div class="cart-summary">
+          <h4>Total</h4>
+          <h3>${{ total }}</h3>
+
+          <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-warning w-100 mt-3">
+              Place Order
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
