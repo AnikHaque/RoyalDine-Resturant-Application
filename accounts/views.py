@@ -8,6 +8,8 @@ from orders.models import Order
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncDate
 import json
+from datetime import date, timedelta
+
 
 # -------------------------------
 # Authentication Views
@@ -100,33 +102,41 @@ def staff_dashboard(request):
     return render(request, 'accounts/dashboard/staff_dashboard.html', {
         'orders': orders
     })
+
+
 @login_required
 def staff_analytics(request):
     if not request.user.is_staff:
-        return redirect('staff_dashboard')
+        messages.error(request, "You are not authorized to access this page.")
+        return redirect('dashboard')
 
-    # Total orders
+    # Summary counts
     total_orders = Order.objects.count()
     total_paid = Order.objects.filter(status='PAID').count()
     total_pending = Order.objects.filter(status='PENDING').count()
 
-    # Revenue per day (last 7 days)
-    from django.utils import timezone
-    from datetime import timedelta
+    # Last 7 days
+    last_week = date.today() - timedelta(days=6)  # including today
 
-    today = timezone.now().date()
-    last_week = today - timedelta(days=6)
-
-    revenue_data = (
-        Order.objects.filter(created_at__date__gte=last_week, status='PAID')
+    # Revenue chart data
+    revenue_data_qs = (
+        Order.objects.filter(created_at__date__gte=last_week)
         .values('created_at__date')
-        .annotate(revenue=Sum('total_price'))
+        .annotate(total=Sum('total_price'))
         .order_by('created_at__date')
     )
 
-    # Prepare data for chart.js
-    chart_labels = [d['created_at__date'].strftime("%b %d") for d in revenue_data]
-    chart_data = [float(d['revenue']) for d in revenue_data]
+    chart_labels = [d['created_at__date'].strftime('%d %b') for d in revenue_data_qs]
+    chart_data = [float(d['total']) for d in revenue_data_qs]
+
+    # Orders per day
+    orders_data = (
+        Order.objects.filter(created_at__date__gte=last_week)
+        .values('created_at__date')
+        .annotate(count=Count('id'))
+        .order_by('created_at__date')
+    )
+    orders_per_day = [d['count'] for d in orders_data]
 
     context = {
         'total_orders': total_orders,
@@ -134,9 +144,11 @@ def staff_analytics(request):
         'total_pending': total_pending,
         'chart_labels': chart_labels,
         'chart_data': chart_data,
+        'orders_per_day': orders_per_day,
     }
 
     return render(request, 'accounts/dashboard/staff_analytics.html', context)
+
 
 @login_required
 def manager_dashboard(request):
