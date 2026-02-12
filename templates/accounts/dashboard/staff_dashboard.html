@@ -4,9 +4,13 @@
     <a href="{% url 'staff_analytics' %}">
         📊 Analytics
     </a>
+    <a href="{% url 'staff_inventory' %}">
+        Inventory
+    </a>
 <a href="{% url 'staff_dashboard' %}">All Orders</a>
 <a href="{% url 'staff_dashboard' %}?status=PAID">Completed Orders</a>
 <a href="{% url 'staff_dashboard' %}?status=PENDING">Pending Orders</a>
+
 {% endblock %}
 
 {% block content %}
@@ -48,4 +52,7 @@
 {% else %}
 <p>No orders found.</p>
 {% endif %}
+
+
 {% endblock %}
+

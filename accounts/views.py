@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
+from menu.models import Food
 from .forms import CustomerRegisterForm, LoginForm
 from .decorators import customer_required, staff_required, manager_required
 from orders.models import Order
@@ -102,6 +104,19 @@ def staff_dashboard(request):
     return render(request, 'accounts/dashboard/staff_dashboard.html', {
         'orders': orders
     })
+
+@login_required
+def staff_inventory(request):
+    if not request.user.is_staff:
+        messages.error(request, "You are not authorized to access this page.")
+        return redirect('dashboard')
+
+    low_stock_items = Food.objects.filter(stock__lte=5, is_available=True)
+
+    context = {
+        'low_stock_items': low_stock_items
+    }
+    return render(request, 'accounts/dashboard/staff_inventory.html', context)
 
 
 @login_required
