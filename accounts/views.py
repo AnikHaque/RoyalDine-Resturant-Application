@@ -2,11 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
 from .forms import CustomerRegisterForm, LoginForm
 from .decorators import customer_required, staff_required, manager_required
-
 from orders.models import Order
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDate
+import json
 
 # -------------------------------
 # Authentication Views
@@ -99,7 +100,53 @@ def staff_dashboard(request):
     return render(request, 'accounts/dashboard/staff_dashboard.html', {
         'orders': orders
     })
+@login_required
+def staff_analytics(request):
+    if not request.user.is_staff:
+        return redirect('dashboard')
 
+    # Orders per day
+    orders_per_day = (
+        Order.objects
+        .annotate(date=TruncDate('created_at'))
+        .values('date')
+        .annotate(count=Count('id'))
+        .order_by('date')
+    )
+
+    dates = [str(x['date']) for x in orders_per_day]
+    counts = [x['count'] for x in orders_per_day]
+
+    # Revenue per day
+    revenue = (
+        Order.objects
+        .annotate(date=TruncDate('created_at'))
+        .values('date')
+        .annotate(total=Sum('total_price'))
+        .order_by('date')
+    )
+
+    revenue_totals = [float(x['total'] or 0) for x in revenue]
+
+    # Status distribution
+    status_data = (
+        Order.objects
+        .values('status')
+        .annotate(count=Count('id'))
+    )
+
+    status_labels = [x['status'] for x in status_data]
+    status_counts = [x['count'] for x in status_data]
+
+    context = {
+        'dates': json.dumps(dates),
+        'counts': json.dumps(counts),
+        'revenue': json.dumps(revenue_totals),
+        'status_labels': json.dumps(status_labels),
+        'status_counts': json.dumps(status_counts),
+    }
+
+    return render(request, 'accounts/dashboard/staff_analytics.html', context)
 
 @login_required
 def manager_dashboard(request):
