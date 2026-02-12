@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from menu.models import Food
 
 
 class Order(models.Model):
@@ -20,6 +21,12 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
-    food_name = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=8, decimal_places=2)
+
+    food = models.ForeignKey(
+        Food,
+        on_delete=models.CASCADE
+    )
+
     quantity = models.IntegerField()
+    price = models.DecimalField(max_digits=8, decimal_places=2)
+

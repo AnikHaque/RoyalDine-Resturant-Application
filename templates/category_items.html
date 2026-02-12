@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+
+  <h2 class="mb-4">{{ category.name }}</h2>
+
+  <div class="row g-4">
+    {% for food in foods %}
+    <div class="col-md-4">
+      <div class="card shadow-sm h-100">
+
+        <img src="{{ food.image.url }}" class="card-img-top">
+
+        <div class="card-body">
+          <h5>{{ food.name }}</h5>
+          <p>{{ food.description|truncatechars:80 }}</p>
+          <h6 class="text-warning">${{ food.price }}</h6>
+
+          <a href="{% url 'add_to_cart' food.id %}" class="btn btn-warning w-100">
+            Add to Cart
+          </a>
+
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

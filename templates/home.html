@@ -1,14 +1,140 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+  .category-card {
+  background: white;
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  transition: 0.3s;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.category-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.15);
+}
+
+.category-body h5 {
+  font-weight: 700;
+}
+
+.category-body span {
+  color: #f39c12;
+  font-weight: 600;
+}
+
+.food-card{
+  border-radius:18px;
+  overflow:hidden;
+  transition:0.3s;
+}
+
+.food-card:hover{
+  transform:translateY(-10px);
+  box-shadow:0 25px 50px rgba(0,0,0,0.18);
+}
+
+.food-card img{
+  transition:0.4s;
+}
+
+.food-card:hover img{
+  transform:scale(1.05);
+}
+</style>
+<!-- HERO -->
 <section class="hero">
   <div class="overlay"></div>
   <div class="container h-100 d-flex align-items-center">
     <div class="text-white hero-content">
       <h1>Experience <span>Luxury Taste</span></h1>
       <p>Fresh ingredients. Expert chefs. Delivered hot.</p>
-      <a href="#" class="btn btn-lg btn-warning mt-3">Explore Menu</a>
+      <a href="{% url 'menu' %}" class="btn btn-lg btn-warning mt-3">Explore Menu</a>
     </div>
   </div>
 </section>
+
+
+<!-- CATEGORY SECTION -->
+<section class="py-5 bg-light">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <h2 class="fw-bold">Browse By Category</h2>
+      <p class="text-muted">Find your favorite dishes</p>
+    </div>
+
+    <div class="row g-4">
+
+      {% for cat in categories %}
+      <div class="col-md-3 col-sm-6">
+        <a href="{% url 'category_items' cat.id %}" style="text-decoration:none;">
+          <div class="category-card">
+
+            <div class="category-body">
+              <h5>{{ cat.name }}</h5>
+              <span>{{ cat.item_count }} Items</span>
+            </div>
+
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>
+
+<!-- Top Selling Section -->
+<section class="py-5">
+  <div class="container">
+
+    <div class="text-center mb-5">
+      <h2>🔥 Top Selling Dishes</h2>
+      <p class="text-muted">Customer favorite items</p>
+    </div>
+
+    <div class="row g-4">
+
+      {% for item in top_selling %}
+      <div class="col-md-3 col-sm-6">
+
+        <div class="card food-card border-0 shadow-sm">
+
+          {% if item.food__image %}
+          <img src="{{ item.food__image.url }}">
+          {% endif %}
+
+
+          <div class="card-body text-center">
+            <h6>{{ item.food__name }}</h6>
+
+            <p class="text-warning fw-bold mb-1">
+              ${{ item.food__price }}
+            </p>
+
+            <small class="text-muted">
+              Sold {{ item.total_sold }} times
+            </small>
+
+            <a href="{% url 'add_to_cart' item.food__id %}"
+               class="btn btn-warning w-100 mt-2">
+               Add To Cart
+            </a>
+
+          </div>
+        </div>
+
+      </div>
+      {% endfor %}
+
+    </div>
+
+  </div>
+</section>
+
+
 {% endblock %}

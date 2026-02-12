@@ -2,6 +2,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Order, OrderItem
+from menu.models import Food
 
 
 @login_required
@@ -18,14 +19,20 @@ def checkout_view(request):
             total_price=total
         )
 
-        for item in cart.values():
+        for item_id, item in cart.items():
+            try:
+                food = Food.objects.get(id=item_id)
+            except Food.DoesNotExist:
+                continue  # skip if food was deleted
+
             OrderItem.objects.create(
                 order=order,
-                food_name=item['name'],
+                food=food,          # ✅ use ForeignKey
                 price=item['price'],
                 quantity=item['qty']
             )
 
+        # Clear cart
         request.session['cart'] = {}
         return redirect('payment_page', order_id=order.id)
 
@@ -33,7 +40,6 @@ def checkout_view(request):
         'cart': cart,
         'total': total
     })
-
 @login_required
 def payment_page(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
