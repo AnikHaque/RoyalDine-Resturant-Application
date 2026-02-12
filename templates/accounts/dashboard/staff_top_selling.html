@@ -1,0 +1,61 @@
+{% extends "accounts/dashboard/base_dashboard.html" %}
+
+{% block sidebar %}
+<a href="{% url 'staff_analytics' %}">📊 Analytics</a>
+<a href="{% url 'staff_dashboard' %}">All Orders</a>
+<a href="{% url 'staff_dashboard' %}?status=PAID">Completed Orders</a>
+<a href="{% url 'staff_dashboard' %}?status=PENDING">Pending Orders</a>
+<a href="{% url 'staff_top_selling' %}">🔥 Top Selling</a>
+{% endblock %}
+
+{% block content %}
+<h2 style="font-size:1.5rem; margin-bottom:20px;">Top Selling Dishes (Last 30 Days)</h2>
+
+<div class="card p-3 mb-3" style="font-size:0.85rem;">
+    <canvas id="topSellingChart" height="150"></canvas>
+</div>
+
+<!-- Optional table below chart -->
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Dish</th>
+            <th>Sales Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in top_selling %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.food_name }}</td>
+            <td>{{ item.sales_count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('topSellingChart').getContext('2d');
+const topSellingChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: {{ top_selling_labels|safe }},
+        datasets: [{
+            label: 'Sales Count',
+            data: {{ top_selling_data|safe }},
+            backgroundColor: 'rgba(255, 99, 132, 0.7)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true } }
+    }
+});
+</script>
+{% endblock %}

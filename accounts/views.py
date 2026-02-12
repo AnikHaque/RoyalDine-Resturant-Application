@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
 from menu.models import Food
 from .forms import CustomerRegisterForm, LoginForm
 from .decorators import customer_required, staff_required, manager_required
@@ -10,8 +9,9 @@ from orders.models import Order
 from django.db.models import Sum, Count
 from django.db.models.functions import TruncDate
 import json
-from datetime import date, timedelta
-
+from datetime import date, timedelta,datetime
+from orders.models import OrderItem
+from django.shortcuts import render
 
 # -------------------------------
 # Authentication Views
@@ -164,6 +164,33 @@ def staff_analytics(request):
 
     return render(request, 'accounts/dashboard/staff_analytics.html', context)
 
+@login_required
+def staff_top_selling(request):
+    if not request.user.is_staff:
+        messages.error(request, "Unauthorized access")
+        return redirect('dashboard')
+
+    today = datetime.today()
+    last_month = today - timedelta(days=30)
+
+    # Top selling dishes last 30 days
+    top_selling_qs = (
+        OrderItem.objects.filter(order__created_at__gte=last_month)
+        .values('food_name')
+        .annotate(sales_count=Count('id'))
+        .order_by('-sales_count')[:10]
+    )
+
+    # Context er jonno list of dict
+    top_selling = [{'food_name': item['food_name'], 'sales_count': item['sales_count']} for item in top_selling_qs]
+
+    context = {
+        'top_selling': top_selling,
+        'top_selling_labels': [item['food_name'] for item in top_selling],
+        'top_selling_data': [item['sales_count'] for item in top_selling],
+    }
+
+    return render(request, 'accounts/dashboard/staff_top_selling.html', context)
 
 @login_required
 def manager_dashboard(request):
