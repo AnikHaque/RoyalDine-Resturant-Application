@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
 
-from menu.models import Category, Food, Offer
+from menu.models import Category, Food, Offer,ComboDeal
 from orders.models import OrderItem
 
 
@@ -36,6 +36,12 @@ def home(request):
     # Active Offers
     today = timezone.now().date()
 
+    combo_deals = ComboDeal.objects.filter(
+        is_active=True,
+        start_date__lte=today,
+        end_date__gte=today
+    ).prefetch_related('foods')[:5]  # max 5 combos
+
     offers = (
         Offer.objects
         .filter(
@@ -52,6 +58,7 @@ def home(request):
         "top_selling": top_selling,
         "today_specials": today_specials,
         "offers": offers,
+        'combo_deals': combo_deals,
     }
 
     return render(request, "home.html", context)
