@@ -17,51 +17,140 @@
 
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark fixed-top custom-nav">
-    <div class="container">
-      <a class="navbar-brand" href="#">Resto</a>
-      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#nav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+ <nav class="navbar navbar-expand-lg fixed-top custom-nav">
+  <div class="container">
+    <a class="navbar-brand playfair" href="/">
+      Royal<span>Dine</span>
+    </a>
 
-      <div id="nav" class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Menu</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Login</a></li>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navContent">
+      <ul class="navbar-nav ms-auto align-items-center">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'menu' %}">Menu</a>
+        </li>
+
+        {% if user.is_authenticated %}
+          {% if user.is_staff %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'staff_dashboard' %}">Staff Panel</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'customer_dashboard' %}">My Account</a>
+            </li>
+          {% endif %}
           <li class="nav-item">
-            <a class="btn btn-warning ms-3" href="#">Order Now</a>
+            <a class="nav-link logout-link" href="{% url 'logout' %}">Logout</a>
           </li>
-         {% if user.is_authenticated %}
-  
-  {% if user.is_staff %}
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'staff_dashboard' %}">
-        Staff Panel
-      </a>
-    </li>
-  {% else %}
-    <li class="nav-item">
-      <a class="nav-link" href="{% url 'customer_dashboard' %}">
-        My Account
-      </a>
-    </li>
-  {% endif %}
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+        {% endif %}
 
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-  </li>
-
-{% else %}
-  <li class="nav-item">
-    <a class="nav-link" href="{% url 'login' %}">Login</a>
-  </li>
-{% endif %}
-
-
-        </ul>
-      </div>
+        <li class="nav-item ms-lg-3">
+          <a class="btn btn-order" href="{% url 'menu' %}">Order Now</a>
+        </li>
+      </ul>
     </div>
-  </nav>
+  </div>
+</nav>
+
+<style>
+  /* --- Premium Navbar Styling --- */
+  .custom-nav {
+    background: rgba(15, 20, 30, 0.9); /* Deep Dark with Transparency */
+    backdrop-filter: blur(10px); /* Glass effect */
+    padding: 18px 0;
+    transition: all 0.4s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .navbar-brand {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff !important;
+    letter-spacing: 1px;
+  }
+
+  .navbar-brand span {
+    color: #ff4757; /* Your Website Red */
+  }
+
+  .nav-link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 15px;
+    font-weight: 500;
+    margin: 0 10px;
+    transition: 0.3s;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .nav-link:hover {
+    color: #ff4757 !important;
+  }
+
+  /* Order Now Button */
+  .btn-order {
+    background: #ff4757;
+    color: white !important;
+    padding: 10px 25px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: 0.4s;
+    border: none;
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.2);
+  }
+
+  .btn-order:hover {
+    background: #ffffff;
+    color: #ff4757 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+  }
+
+  .logout-link {
+    color: #ff4757 !important;
+    font-weight: 700;
+  }
+
+  /* Scrolled Navbar State (Optional via JS) */
+  .nav-scrolled {
+    padding: 12px 0;
+    background: #0f141e;
+  }
+
+  /* Mobile Fix */
+  @media (max-width: 991px) {
+    .navbar-collapse {
+      background: #0f141e;
+      margin-top: 15px;
+      padding: 20px;
+      border-radius: 20px;
+    }
+    .nav-item {
+        margin-bottom: 10px;
+    }
+  }
+</style>
+
+<script>
+  // স্ক্রল করলে নেভবার ছোট হবে
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 50) {
+      document.querySelector('.navbar').classList.add('nav-scrolled');
+    } else {
+      document.querySelector('.navbar').classList.remove('nav-scrolled');
+    }
+  });
+</script>
 
   {% block content %}{% endblock %}
 
