@@ -243,6 +243,78 @@
   </div>
 </section>
 
+<section class="combo-section py-5">
+  <div class="container">
+
+    <!-- Section Header -->
+    <div class="text-center mb-4">
+      <h2>🍔 Featured Combo Deals</h2>
+      <p class="text-muted">Get the best combos at discounted prices!</p>
+    </div>
+
+    <div class="row g-4">
+
+      {% for combo in combo_deals %}
+      <div class="col-md-4 col-sm-6">
+        <div class="card shadow-sm h-100 position-relative combo-card">
+
+          <!-- Discount Badge -->
+          <span class="badge bg-danger position-absolute m-2">
+            {{ combo.discount_percentage }}% OFF
+          </span>
+
+          <div class="card-body text-center">
+
+            <!-- Combo Title -->
+            <h5>{{ combo.title }}</h5>
+
+            <!-- Foods in Combo -->
+            <p class="text-muted small mb-2">
+              {% for food in combo.foods.all %}
+                {{ food.name }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </p>
+
+            <!-- Prices -->
+            <p class="mb-1">
+              <del class="text-muted">৳ {{ combo.total_price }}</del>
+            </p>
+            <p class="text-danger fw-bold fs-5">
+              ৳ {{ combo.discounted_price }}
+            </p>
+
+            <!-- Combo Description -->
+            <p class="text-muted" style="font-size:0.85rem;">
+              {{ combo.description|truncatechars:60 }}
+            </p>
+
+            <!-- Validity -->
+            <small class="text-muted d-block mb-3">
+              Valid until {{ combo.end_date|date:"d M Y" }}
+            </small>
+
+            <!-- Add to Cart Button -->
+            {% if combo.foods.first.stock > 0 %}
+            <a href="{% url 'add_to_cart' combo.foods.first.id %}"
+               class="btn btn-danger w-100">
+               🛒 Add Combo to Cart
+            </a>
+            {% else %}
+            <button class="btn btn-secondary w-100" disabled>
+              Out of Stock
+            </button>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+      {% empty %}
+      <p class="text-center">No combo deals available at the moment!</p>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
 
 
 

@@ -36,11 +36,6 @@ def home(request):
     # Active Offers
     today = timezone.now().date()
 
-    combo_deals = ComboDeal.objects.filter(
-        is_active=True,
-        start_date__lte=today,
-        end_date__gte=today
-    ).prefetch_related('foods')[:5]  # max 5 combos
 
     offers = (
         Offer.objects
@@ -52,6 +47,16 @@ def home(request):
         )
         .select_related('food')
     )
+# ✅ Combo Deals
+    combo_deals = ComboDeal.objects.filter(
+        is_active=True,
+        start_date__lte=today,
+        end_date__gte=today
+    ).prefetch_related('foods')[:5]
+
+    # Calculate total price for each combo
+    for combo in combo_deals:
+        combo.total_price = sum([food.price for food in combo.foods.all()])
 
     context = {
         "categories": categories,
