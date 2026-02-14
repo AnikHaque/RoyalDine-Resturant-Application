@@ -22,27 +22,35 @@ class Food(models.Model):
 
     def __str__(self):
         return self.name
-
 class Offer(models.Model):
     food = models.ForeignKey(
-    Food,
-    on_delete=models.CASCADE,
-    null=True,
-    blank=True
-)
+        Food,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True
+    )
+
     title = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
     discount_percentage = models.PositiveIntegerField(default=0)
+
     start_date = models.DateField()
     end_date = models.DateField()
+
     is_active = models.BooleanField(default=True)
 
-    # ⭐ Calculated property
     @property
     def discounted_price(self):
-        if not self.food or not self.discount_percent:
+        if not self.food or not self.discount_percentage:
             return self.food.price if self.food else 0
 
-        discount = (self.food.price * self.discount_percent) / 100
+        discount = (self.food.price * self.discount_percentage) / 100
         return self.food.price - discount
+
+    @property
+    def is_valid(self):
+        today = timezone.now().date()
+        return self.is_active and self.start_date <= today <= self.end_date
+
+
 
