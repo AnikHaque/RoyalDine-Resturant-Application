@@ -1,13 +1,13 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
-
-from menu.models import Category, Food, Offer,ComboDeal
+from menu.forms import TestimonialForm
+from menu.models import Category, Food, Offer,ComboDeal, Testimonial
 from orders.models import OrderItem
-
+from django.contrib import messages
 
 def home(request):
-
+   
     # Categories with available food count
     categories = Category.objects.annotate(
         item_count=Count('foods', filter=Q(foods__is_available=True))
@@ -58,12 +58,28 @@ def home(request):
     # Calculate total price for each combo
     for combo in combo_deals:
         combo.total_price = sum([food.price for food in combo.foods.all()])
+
+    testimonials = Testimonial.objects.all().order_by('-created_at')
     context = {
         "categories": categories,
         "top_selling": top_selling,
         "today_specials": today_specials,
         "offers": offers,
         'combo_deals': combo_deals,
+        'testimonials': testimonials,
+       
     }
 
     return render(request, "home.html", context)
+
+def add_review(request):
+    if request.method == "POST":
+        form = TestimonialForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Dhonyobad! Apnar review-ti home-page-e show korbe.")
+            return redirect('home') # Review dewar por home-e niye jabe
+    else:
+        form = TestimonialForm()
+    
+    return render(request, 'add_review.html', {'form': form})

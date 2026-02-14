@@ -1,3 +1,4 @@
+from . import views
 from django.contrib import admin
 from django.urls import path, include
 
@@ -15,6 +16,7 @@ urlpatterns = [
     path('orders/', include('orders.urls')),
     path('payments/', include('payments.urls')),
     path('reservations/', include('reservations.urls')),
+    path('add-review/', views.add_review, name='add_review'),
 ]
 
 # 👇 THIS MUST BE AT THE BOTTOM

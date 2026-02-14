@@ -1,99 +1,195 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 <style>
     :root {
         --primary: #ff4757;
-        --dark: #2d3436;
-        --light-bg: #f9f9fb;
-        --glass: rgba(255, 255, 255, 0.9);
+        --dark-gold: #c6a34f;
+        --deep-dark: #121212;
+        --soft-white: #f8f9fa;
     }
 
-    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--light-bg); color: var(--dark); }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background: #fff; color: var(--deep-dark); }
+    h1, h2, h3, .playfair { font-family: 'Playfair Display', serif; }
 
-    /* --- Hero Section --- */
+    /* --- Luxury Hero --- */
     .hero {
-        height: 75vh;
-        background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') center/cover;
-        display: flex;
-        align-items: center;
-        border-radius: 0 0 40px 40px;
-        margin-bottom: 60px;
-        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        height: 90vh;
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1600&q=80') center/cover fixed;
+        display: flex; align-items: center; text-align: center; color: white;
+        clip-path: polygon(0 0, 100% 0, 100% 90%, 50% 100%, 0 90%);
     }
-    .hero h1 { font-family: 'Playfair Display', serif; font-size: 4.5rem; font-weight: 800; }
-    .hero span { color: var(--primary); }
+    .hero h1 { font-size: 5rem; font-weight: 900; line-height: 1.1; margin-bottom: 20px; }
+    .hero span { color: var(--primary); font-style: italic; }
 
-    /* --- Modern Card Style --- */
-    .food-card {
-        border: none;
-        border-radius: 24px;
-        background: #fff;
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        height: 100%;
-        overflow: hidden;
+    /* --- Premium Food Cards --- */
+    .premium-card {
+        border: none; border-radius: 25px; background: white; transition: 0.5s;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05); overflow: hidden; height: 100%; position: relative;
     }
-    .food-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-    }
-    .card-img-wrapper {
-        height: 200px;
-        overflow: hidden;
-        position: relative;
-    }
-    .card-img-wrapper img {
-        width: 100%; height: 100%; object-fit: cover; transition: 0.5s;
-    }
-    .food-card:hover .card-img-wrapper img { transform: scale(1.1); }
+    .premium-card:hover { transform: translateY(-15px); box-shadow: 0 20px 60px rgba(255, 71, 87, 0.15); }
+    .img-wrapper { height: 230px; overflow: hidden; position: relative; }
+    .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: 0.8s; }
+    .premium-card:hover .img-wrapper img { transform: scale(1.1); }
 
-    /* --- Category Pill --- */
-    .cat-card {
-        background: #fff;
-        padding: 25px;
-        border-radius: 20px;
-        text-align: center;
-        transition: 0.3s;
-        border: 1px solid rgba(0,0,0,0.05);
-        display: block;
-        text-decoration: none;
-        color: inherit;
+    /* --- Category Bubbles --- */
+    .cat-bubble {
+        padding: 15px 35px; border-radius: 50px; background: var(--soft-white);
+        border: 1px solid #eee; transition: 0.4s; font-weight: 600; color: var(--deep-dark); display: inline-block;
     }
-    .cat-card:hover {
-        background: var(--primary);
-        color: #fff !important;
-        transform: scale(1.05);
-    }
+    .cat-bubble:hover { background: var(--primary); color: white !important; transform: scale(1.1); box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2); }
+
+    /* --- Section Styling --- */
+    .section-head { margin-bottom: 60px; text-align: center; }
+    .section-head h2 { font-size: 3.5rem; font-weight: 800; position: relative; display: inline-block; }
+    .section-head h2::after { content: ''; width: 60px; height: 4px; background: var(--primary); display: block; margin: 15px auto; border-radius: 10px; }
 
     /* --- Badges & Buttons --- */
-    .badge-offer {
-        position: absolute; top: 15px; left: 15px;
-        background: var(--primary); color: white;
-        padding: 6px 14px; border-radius: 50px; font-weight: 700; z-index: 2;
-    }
-    .btn-main {
-        background: var(--primary); color: white;
-        border-radius: 12px; padding: 10px; font-weight: 600;
-        transition: 0.3s; border: none; width: 100%;
-    }
-    .btn-main:hover { background: #e84118; color: white; box-shadow: 0 8px 15px rgba(255, 71, 87, 0.3); }
+    .badge-offer { position: absolute; top: 15px; left: 15px; background: var(--primary); color: white; padding: 6px 15px; border-radius: 50px; font-weight: 800; z-index: 2; font-size: 0.8rem; }
+    .btn-posh { background: var(--primary); color: white; padding: 15px 40px; border-radius: 50px; font-weight: 700; letter-spacing: 1px; transition: 0.4s; border: none; text-decoration: none; }
+    .btn-posh:hover { background: var(--deep-dark); color: white; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
 
-    .section-head { margin-bottom: 40px; }
-    .section-head h2 { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 2.5rem; }
+    /* --- Testimonials --- */
+    .testimonial-box { background: #fff; border-radius: 35px; padding: 50px 30px; border: 1px solid #f1f1f1; transition: 0.4s; position: relative; margin-top: 50px; }
+    .client-avatar { width: 100px; height: 100px; border-radius: 50%; border: 6px solid #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.1); margin: -100px auto 20px; }
 </style>
 
-<section class="hero text-white">
+<section class="hero">
+    <div class="container animate__animated animate__fadeIn">
+        <p class="text-uppercase letter-spacing-2 mb-3">The Fine Art of Taste</p>
+        <h1>Experience <span>Luxury</span> <br>Every Single Bite</h1>
+        <div class="mt-5">
+            <a href="{% url 'menu' %}" class="btn-posh">Explore Our Menu</a>
+        </div>
+    </div>
+</section>
+
+<section class="py-5 mt-5">
+    <div class="container text-center">
+        <div class="section-head">
+            <h2 class="playfair">Culinary Collections</h2>
+            <p class="text-muted">Find your favorite dishes by category</p>
+        </div>
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+            {% for cat in categories %}
+            <a href="{% url 'category_items' cat.id %}" class="cat-bubble text-decoration-none">
+                {{ cat.name }} <span class="ms-1 opacity-50 small">({{ cat.item_count }})</span>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-8">
-                <h1 class="animate__animated animate__fadeInLeft">Experience <br><span>Luxury Taste</span></h1>
-                <p class="lead mb-4 opacity-75">Fresh ingredients. Expert chefs. Delivered hot to your doorstep.</p>
-                <a href="{% url 'menu' %}" class="btn btn-lg btn-main w-auto px-5 rounded-pill">Explore Our Menu</a>
+        <div class="section-head text-start d-flex justify-content-between align-items-end">
+            <div>
+                <h2 class="playfair">Top Selling Masterpieces</h2>
+                <p class="text-muted">Customer favorite items this week</p>
             </div>
+            <a href="{% url 'menu' %}" class="text-dark fw-bold mb-4">View Menu <i class="fas fa-arrow-right ms-2"></i></a>
+        </div>
+        <div class="row g-4">
+            {% for item in top_selling %}
+            <div class="col-lg-3 col-md-6">
+                <div class="premium-card">
+                    <div class="img-wrapper">
+                        {% if item.food__image %}<img src="{{ item.food__image.url }}" alt="">{% endif %}
+                    </div>
+                    <div class="p-4 text-center">
+                        <h6 class="fw-bold mb-2">{{ item.food__name }}</h6>
+                        <p class="text-primary fw-bold fs-5">৳ {{ item.food__price }}</p>
+                        <small class="text-muted d-block mb-3">Sold {{ item.total_sold }} times</small>
+                        <a href="{% url 'add_to_cart' item.food__id %}" class="btn-posh btn-sm px-4 d-inline-block">Add To Cart</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-light rounded-5 mx-2 mx-md-4">
+    <div class="container py-4">
+        <div class="section-head">
+            <h2 class="playfair">Today's Specials</h2>
+            <p class="text-muted">Handpicked dishes just for you today</p>
+        </div>
+        <div class="row g-4">
+            {% for food in today_specials %}
+            <div class="col-lg-3 col-md-6">
+                <div class="premium-card">
+                    <div class="img-wrapper">
+                        {% if food.image %}<img src="{{ food.image.url }}">{% endif %}
+                    </div>
+                    <div class="p-4">
+                        <h6 class="fw-bold">{{ food.name }}</h6>
+                        <p class="text-primary fw-bold mb-2">৳ {{ food.price }}</p>
+                        <p class="text-muted small mb-3">{{ food.description|truncatechars:50 }}</p>
+                        <a href="{% url 'add_to_cart' food.id %}" class="btn btn-dark w-100 rounded-pill">Order Now</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="section-head">
+            <h2 class="playfair">🎁 Exclusive Offers</h2>
+        </div>
+        <div class="row g-4">
+            {% for offer in offers %}
+            <div class="col-lg-3 col-md-6">
+                <div class="premium-card">
+                    <span class="badge-offer">{{ offer.discount_percentage }}% OFF</span>
+                    <div class="img-wrapper">
+                        {% if offer.food.image %}<img src="{{ offer.food.image.url }}">{% endif %}
+                    </div>
+                    <div class="p-4 text-center">
+                        <h6 class="fw-bold">{{ offer.title }}</h6>
+                        <p class="mb-1"><del class="text-muted small">৳ {{ offer.food.price }}</del></p>
+                        <p class="text-danger fw-bold fs-4 mb-3">৳ {{ offer.discounted_price }}</p>
+                        <a href="{% url 'add_to_cart' offer.food.id %}" class="btn-posh w-100 btn-sm">Claim Offer</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center"><p class="text-muted">No active offers today.</p></div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5 bg-dark text-white rounded-5 my-5 mx-2 mx-md-4">
+    <div class="container py-5 text-center">
+        <h2 class="playfair display-4 mb-5">Featured Combo Deals</h2>
+        <div class="row g-4">
+            {% for combo in combo_deals %}
+            <div class="col-md-4 text-start">
+                <div class="p-4 rounded-4" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="fw-bold">{{ combo.title }}</h5>
+                        <span class="badge bg-primary">-{{ combo.discount_percentage }}%</span>
+                    </div>
+                    <div class="mb-4">
+                        {% for food in combo.foods.all %}
+                        <span class="badge bg-light text-dark fw-normal me-1 mb-1">{{ food.name }}</span>
+                        {% endfor %}
+                    </div>
+                    <h3 class="fw-bold text-primary">৳ {{ combo.discounted_price }}</h3>
+                    <del class="opacity-50">৳ {{ combo.total_price }}</del>
+                    <a href="{% url 'add_to_cart' combo.foods.first.id %}" class="btn btn-outline-light w-100 mt-4 rounded-pill">Order Combo</a>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
@@ -101,138 +197,45 @@
 <section class="py-5">
     <div class="container text-center">
         <div class="section-head">
-            <h2>Browse By Category</h2>
-            <p class="text-muted">Find your favorite dishes by category</p>
+            <h2 class="playfair">What Our Guests Say</h2>
         </div>
-        <div class="row g-4">
-            {% for cat in categories %}
-            <div class="col-6 col-md-3">
-                <a href="{% url 'category_items' cat.id %}" class="cat-card shadow-sm">
-                    <h5 class="fw-bold mb-1">{{ cat.name }}</h5>
-                    <span class="badge bg-light text-dark rounded-pill">{{ cat.item_count }} Items</span>
-                </a>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<section class="py-5 bg-white">
-    <div class="container">
-        <div class="section-head text-center">
-            <h2>🔥 Top Selling Dishes</h2>
-            <p class="text-muted">Customer favorite items this week</p>
-        </div>
-        <div class="row g-4">
-            {% for item in top_selling %}
-            <div class="col-md-3 col-sm-6">
-                <div class="card food-card">
-                    <div class="card-img-wrapper">
-                        {% if item.food__image %}
-                        <img src="{{ item.food__image.url }}" alt="{{ item.food__name }}">
+        <div class="swiper testimonialSwiper pb-5">
+            <div class="swiper-wrapper">
+                {% for review in testimonials %}
+                <div class="swiper-slide px-2">
+                    <div class="testimonial-box shadow-sm">
+                        {% if review.image %}
+                            <img src="{{ review.image.url }}" class="client-avatar">
+                        {% else %}
+                            <img src="https://ui-avatars.com/api/?name={{ review.name }}&background=ff4757&color=fff" class="client-avatar">
                         {% endif %}
-                    </div>
-                    <div class="card-body text-center">
-                        <h6 class="fw-bold">{{ item.food__name }}</h6>
-                        <p class="text-primary fw-bold mb-1">৳ {{ item.food__price }}</p>
-                        <small class="text-muted d-block mb-3">Sold {{ item.total_sold }} times</small>
-                        <a href="{% url 'add_to_cart' item.food__id %}" class="btn btn-main">Add To Cart</a>
+                        <div class="text-warning mb-3">
+                            {% with ''|center:review.rating as range %}
+                            {% for _ in range %}<i class="fas fa-star"></i>{% endfor %}
+                            {% endwith %}
+                        </div>
+                        <p class="fst-italic text-muted mb-4">"{{ review.review_text|truncatechars:150 }}"</p>
+                        <h6 class="fw-bold mb-0">{{ review.name }}</h6>
+                        <small class="text-primary text-uppercase">{{ review.designation }}</small>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
+            <div class="swiper-pagination mt-5"></div>
         </div>
+        <a href="{% url 'add_review' %}" class="btn-posh mt-4 d-inline-block">Write A Review</a>
     </div>
 </section>
 
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="section-head text-center">
-            <h2>Today's Specials</h2>
-            <p class="text-muted">Handpicked dishes just for you today</p>
-        </div>
-        <div class="row g-4">
-            {% for food in today_specials %}
-            <div class="col-md-3 col-sm-6">
-                <div class="card food-card border-0">
-                    <div class="card-img-wrapper">
-                        {% if food.image %}
-                        <img src="{{ food.image.url }}" class="card-img-top">
-                        {% endif %}
-                    </div>
-                    <div class="card-body">
-                        <h6 class="fw-bold">{{ food.name }}</h6>
-                        <p class="text-primary fw-bold mb-2">৳ {{ food.price }}</p>
-                        <p class="text-muted small mb-3">{{ food.description|truncatechars:50 }}</p>
-                        <a href="{% url 'add_to_cart' food.id %}" class="btn btn-main">Add To Cart</a>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<section class="py-5 bg-white">
-    <div class="container">
-        <div class="section-head text-center">
-            <h2>🎁 Hot Offers</h2>
-            <p class="text-muted">Grab these deals before they expire!</p>
-        </div>
-        <div class="row g-4">
-            {% for offer in offers %}
-            <div class="col-md-3">
-                <div class="card food-card">
-                    <span class="badge-offer">{{ offer.discount_percentage }}% OFF</span>
-                    <div class="card-img-wrapper">
-                        {% if offer.food.image %}
-                        <img src="{{ offer.food.image.url }}">
-                        {% endif %}
-                    </div>
-                    <div class="card-body text-center">
-                        <h6 class="fw-bold">{{ offer.title }}</h6>
-                        <p class="mb-1"><del class="text-muted small">৳ {{ offer.food.price }}</del></p>
-                        <p class="text-danger fw-bold fs-5 mb-2">৳ {{ offer.discounted_price }}</p>
-                        <a href="{% url 'add_to_cart' offer.food.id %}" class="btn btn-main">Claim Offer</a>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <div class="col-12 text-center"><p>No offers available right now.</p></div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="section-head text-center">
-            <h2>🍔 Featured Combo Deals</h2>
-            <p class="text-muted">More flavor for less money</p>
-        </div>
-        <div class="row g-4">
-            {% for combo in combo_deals %}
-            <div class="col-md-4">
-                <div class="card food-card p-3">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <h5 class="fw-bold text-dark">{{ combo.title }}</h5>
-                        <span class="badge bg-danger rounded-pill">-{{ combo.discount_percentage }}%</span>
-                    </div>
-                    <div class="mb-3">
-                        {% for food in combo.foods.all %}
-                        <span class="badge bg-light text-dark fw-normal me-1 mb-1">{{ food.name }}</span>
-                        {% endfor %}
-                    </div>
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="h4 fw-bold text-primary mb-0">৳ {{ combo.discounted_price }}</span>
-                        <del class="text-muted ms-2">৳ {{ combo.total_price }}</del>
-                    </div>
-                    <a href="{% url 'add_to_cart' combo.foods.first.id %}" class="btn btn-main">Order Combo</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        new Swiper(".testimonialSwiper", {
+            slidesPerView: 1, spaceBetween: 30, loop: true,
+            autoplay: { delay: 4000 },
+            pagination: { el: ".swiper-pagination", clickable: true },
+            breakpoints: { 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }
+        });
+    });
+</script>
 {% endblock %}
