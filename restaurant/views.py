@@ -36,6 +36,7 @@ def home(request):
     # Active Offers
     today = timezone.now().date()
 
+    
 
     offers = (
         Offer.objects
@@ -57,7 +58,6 @@ def home(request):
     # Calculate total price for each combo
     for combo in combo_deals:
         combo.total_price = sum([food.price for food in combo.foods.all()])
-
     context = {
         "categories": categories,
         "top_selling": top_selling,

@@ -93,3 +93,13 @@ class ComboDeal(models.Model):
         return self.is_active and self.start_date <= today <= self.end_date
 
 
+class Testimonial(models.Model):
+    name = models.CharField(max_length=100)
+    designation = models.CharField(max_length=100, help_text="Example: Food Blogger")
+    image = models.ImageField(upload_to='testimonials/')
+    review_text = models.TextField()
+    rating = models.IntegerField(default=5, validators=[MinValueValidator(1), MaxValueValidator(5)])
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
