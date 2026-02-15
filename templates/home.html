@@ -493,29 +493,7 @@
     }
 </style>
 
-<section class="py-5 bg-dark text-white rounded-5 my-5 mx-2 mx-md-4">
-    <div class="container py-5 text-center">
-        <h2 class="playfair display-4 mb-5">Royal Combo Deals</h2>
-        <div class="row g-4">
-            {% for combo in combo_deals %}
-            <div class="col-md-4 text-start">
-                <div class="p-4 rounded-4 h-100" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="d-flex justify-content-between mb-3">
-                        <h5 class="fw-bold">{{ combo.title }}</h5>
-                        <span class="badge bg-primary">-{{ combo.discount_percentage }}%</span>
-                    </div>
-                    <div class="mb-4">
-                        {% for food in combo.foods.all %}<span class="badge bg-light text-dark fw-normal me-1 mb-1">{{ food.name }}</span>{% endfor %}
-                    </div>
-                    <h3 class="fw-bold text-primary">৳ {{ combo.discounted_price }}</h3>
-                    <del class="opacity-50 small">৳ {{ combo.total_price }}</del>
-                    <button class="btn btn-outline-light w-100 mt-4 rounded-pill">Reserve Combo</button>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
+
 
 <section class="py-5">
     <div class="container">

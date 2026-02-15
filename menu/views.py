@@ -1,5 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from .models import Category
+from django.contrib import messages
+# আগের ইমপোর্টের সাথে শুধু ComboDeal টা কমা দিয়ে যোগ করে দিন
+
 
 def menu_view(request):
     categories = Category.objects.prefetch_related('foods')
@@ -15,3 +18,6 @@ def category_items(request, category_id):
         "foods": foods
     }
     return render(request, "category_items.html", context)
+
+
+

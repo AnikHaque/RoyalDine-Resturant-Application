@@ -1,8 +1,8 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
 from menu.forms import TestimonialForm
-from menu.models import Category, Food, Offer,ComboDeal, Testimonial
+from menu.models import Category, Food, Offer, Testimonial
 from blog.models import Blog
 from orders.models import OrderItem
 from django.contrib import messages
@@ -49,17 +49,8 @@ def home(request):
         )
         .select_related('food')
     )
-# ✅ Combo Deals
-    combo_deals = ComboDeal.objects.filter(
-        is_active=True,
-        start_date__lte=today,
-        end_date__gte=today
-    ).prefetch_related('foods')[:5]
 
-    # Calculate total price for each combo
-    for combo in combo_deals:
-        combo.total_price = sum([food.price for food in combo.foods.all()])
-
+    
     testimonials = Testimonial.objects.all().order_by('-created_at')
     blogs = Blog.objects.filter(is_published=True).order_by('-created_at')[:6]
     context = {
@@ -67,7 +58,6 @@ def home(request):
         "top_selling": top_selling,
         "today_specials": today_specials,
         "offers": offers,
-        'combo_deals': combo_deals,
         'testimonials': testimonials,
         'blogs': blogs
        
@@ -86,3 +76,5 @@ def add_review(request):
         form = TestimonialForm()
     
     return render(request, 'add_review.html', {'form': form})
+
+

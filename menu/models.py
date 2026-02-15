@@ -69,30 +69,6 @@ class Offer(models.Model):
         today = timezone.now().date()
         return self.is_active and self.start_date <= today <= self.end_date
 
-class ComboDeal(models.Model):
-    title = models.CharField(max_length=150)
-    description = models.TextField(blank=True, null=True)
-    foods = models.ManyToManyField('Food', related_name='combo_deals')
-    discount_percentage = models.PositiveIntegerField(default=0)
-    is_active = models.BooleanField(default=True)
-    start_date = models.DateField()
-    end_date = models.DateField()
-
-    def __str__(self):
-        return self.title
-
-    @property
-    def discounted_price(self):
-        total = sum([food.price for food in self.foods.all()])
-        discount = (total * self.discount_percentage) / 100
-        return total - discount
-
-    @property
-    def is_valid(self):
-        from django.utils import timezone
-        today = timezone.now().date()
-        return self.is_active and self.start_date <= today <= self.end_date
-
 
 class Testimonial(models.Model):
     name = models.CharField(max_length=100)
@@ -104,3 +80,5 @@ class Testimonial(models.Model):
 
     def __str__(self):
         return self.name
+    
+
