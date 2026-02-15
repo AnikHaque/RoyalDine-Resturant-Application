@@ -13,6 +13,8 @@ from datetime import date, timedelta,datetime
 from orders.models import OrderItem
 from django.shortcuts import render
 from reservations.models import Reservation
+from blog.models import Blog 
+from django.utils.text import slugify
 # -------------------------------
 # Authentication Views
 # -------------------------------
@@ -233,3 +235,50 @@ def update_reservation_status(request, reservation_id, status):
     reservation.status = status
     reservation.save()
     return redirect('staff_reservations')
+
+@login_required
+def staff_blog_list(request):
+    """স্টাফ ড্যাশবোর্ডে সব ব্লগের লিস্ট দেখাবে"""
+    if not request.user.is_staff:
+        return redirect('dashboard')
+    
+    blogs = Blog.objects.all().order_by('-created_at')
+    return render(request, 'accounts/dashboard/staff_blog_list.html', {'blogs': blogs})
+
+
+@login_required
+def staff_create_blog(request):
+    """স্টাফ ড্যাশবোর্ড থেকে নতুন ব্লগ তৈরি"""
+    if not request.user.is_staff:
+        messages.error(request, "Unauthorized access")
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        category = request.POST.get('category')
+        read_time = request.POST.get('read_time', 5)
+        tags = request.POST.get('tags', '')
+        thumbnail = request.FILES.get('thumbnail')
+        
+        # টাইটেল থেকে স্লাগ তৈরি
+        generated_slug = slugify(title)
+        
+        Blog.objects.create(
+            title=title,
+            slug=generated_slug,
+            content=content,
+            category=category,
+            read_time=read_time,
+            tags=tags,
+            thumbnail=thumbnail,
+            author=request.user,
+            is_published=True
+        )
+        messages.success(request, "Blog post created successfully!")
+        # সেভ হওয়ার পর ডানপাশে লিস্ট দেখার জন্য রিডাইরেক্ট করুন
+        return redirect('staff_blog_list') 
+
+    # যেহেতু এই পেজটি base_dashboard কে extend করছে, 
+    # তাই এটি অটোমেটিক ডানপাশে (Content Block-এ) লোড হবে।
+    return render(request, 'accounts/dashboard/staff_create_blog.html')
