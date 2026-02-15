@@ -3,9 +3,9 @@
 {% block title %}Customer Dashboard{% endblock %}
 
 {% block sidebar %}
-
-    <a href="{% url 'customer_dashboard' %}">My Orders</a>
+<a href="{% url 'customer_dashboard' %}">My Orders</a>
     <a href="{% url 'create_reservation' %}">Book Table</a>
+    <a href="{% url 'reservation_list' %}">My Reservations</a>
 
 {% endblock %}
 {% block content %}

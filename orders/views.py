@@ -74,3 +74,14 @@ def mark_paid(request, order_id):
 
     messages.success(request, f"Order #{order.id} marked as PAID.")
     return redirect('staff_dashboard')
+
+
+def delete_order(request, order_id):
+    # এখানে get_object_or_404 ব্যবহার করলে শুধু ওই আইডিটাই ধরা পড়বে
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    if request.method == 'POST':
+        order.delete() # শুধুমাত্র এই অর্ডারটি ডিলিট হবে
+        messages.success(request, f"Order #{order_id} has been deleted.")
+    
+    return redirect('customer_dashboard')
