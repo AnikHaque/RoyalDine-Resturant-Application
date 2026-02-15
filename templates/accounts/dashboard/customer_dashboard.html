@@ -3,10 +3,11 @@
 {% block title %}Customer Dashboard{% endblock %}
 
 {% block sidebar %}
-<ul class="sidebar-menu">
-    <li><a href="{% url 'customer_dashboard' %}">My Orders</a></li>
-    <!-- আরও links দিতে পারো -->
-</ul>
+
+    <a href="{% url 'customer_dashboard' %}">My Orders</a>
+    <a href="{% url 'create_reservation' %}">Book Table</a>
+    
+
 {% endblock %}
 
 {% block content %}

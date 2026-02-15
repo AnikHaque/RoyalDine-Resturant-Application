@@ -1,5 +1,14 @@
-{% extends 'base.html' %}
-{% block title %}My Orders{% endblock %}
+{% extends 'accounts/dashboard/base_dashboard.html' %}
+
+{% block title %}Customer Dashboard{% endblock %}
+
+{% block sidebar %}
+<ul class="sidebar-menu">
+    <li><a href="{% url 'customer_dashboard' %}">My Orders</a></li>
+    <li><a href="{% url 'create_reservation' %}">Book Table</a></li>
+    <!-- আরও links দিতে পারো -->
+</ul>
+{% endblock %}
 
 {% block content %}
 <style>
