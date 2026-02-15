@@ -5,5 +5,5 @@ from menu import views
 urlpatterns = [
     path('', menu_view, name='menu'),
     path('category/<int:category_id>/', views.category_items, name='category_items'),
-   
+   path('add-combo/<int:combo_id>/', views.add_combo_to_cart, name='add_combo_to_cart'),
 ]

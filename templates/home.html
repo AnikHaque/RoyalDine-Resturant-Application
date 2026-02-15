@@ -493,8 +493,74 @@
     }
 </style>
 
+<section class="combo-section py-5 bg-light">
+    <div class="container">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="display-5 fw-bold text-dark">🔥 আমাদের স্পেশাল কম্বো অফার</h2>
+                <p class="text-muted">অল্প দামে পেটভরা খাবার, বেছে নিন আপনার পছন্দের কম্বোটি!</p>
+                <hr class="w-25 mx-auto border-danger border-2">
+            </div>
+        </div>
 
+        <div class="row g-4">
+            {% if combos %}
+                {% for combo in combos %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                        <div class="position-relative">
+                            {% if combo.image %}
+                                <img src="{{ combo.image.url }}" class="card-img-top" alt="{{ combo.name }}" style="height: 220px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 220px;">
+                                    <span>No Image Available</span>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="position-absolute top-0 start-0 m-3">
+                                <span class="badge bg-danger px-3 py-2 rounded-pill shadow">SPECIAL OFFER</span>
+                            </div>
+                        </div>
 
+                        <div class="card-body p-4 text-center">
+                            <h4 class="card-title fw-bold mb-2">{{ combo.name }}</h4>
+                            <p class="card-text text-muted mb-3 small">{{ combo.description|truncatewords:15 }}</p>
+                            
+                            <div class="d-flex justify-content-center align-items-center mb-4">
+                                <span class="text-decoration-line-through text-muted me-2">৳{{ combo.original_price }}</span>
+                                <span class="h3 fw-bold text-success mb-0">৳{{ combo.discount_price }}</span>
+                            </div>
+
+                            <a href="{% url 'add_combo_to_cart' combo.id %}" class="btn btn-danger btn-lg w-100 rounded-pill shadow-sm transition-all hover-zoom">
+                                <i class="fas fa-shopping-basket me-2"></i> কার্টে যোগ করুন
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center py-5">
+                    <div class="alert alert-info">দুঃখিত! এই মুহূর্তে কোনো কম্বো ডিল নেই।</div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+    .hover-zoom {
+        transition: transform 0.3s ease;
+    }
+    .hover-zoom:hover {
+        transform: translateY(-5px);
+    }
+    .card {
+        transition: all 0.3s ease-in-out;
+    }
+    .card:hover {
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
 <section class="py-5">
     <div class="container">
         <div class="newsletter-section text-center shadow-lg">

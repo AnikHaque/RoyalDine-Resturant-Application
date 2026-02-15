@@ -11,7 +11,8 @@ def checkout_view(request):
     if not cart:
         return redirect('menu')
 
-    total = sum(item['price'] * item['qty'] for item in cart.values())
+    # প্রাইস এবং কোয়ান্টিটি ক্যালকুলেশন (float/int নিশ্চিত করা হয়েছে)
+    total = sum(float(item['price']) * int(item['qty']) for item in cart.values())
 
     if request.method == 'POST':
         order = Order.objects.create(
@@ -20,26 +21,38 @@ def checkout_view(request):
         )
 
         for item_id, item in cart.items():
-            try:
-                food = Food.objects.get(id=item_id)
-            except Food.DoesNotExist:
-                continue  # skip if food was deleted
+            if str(item_id).startswith('combo_'):
+                # ১. কম্বো ডিল সেভ করার জন্য
+                OrderItem.objects.create(
+                    order=order,
+                    food=None,  # ডাটাবেজে এখন এটি null হতে পারবে
+                    combo_id=int(item['product_id']), # সরাসরি আইডি ব্যবহার
+                    price=item['price'],
+                    quantity=item['qty']
+                )
+            else:
+                # ২. নরমাল খাবার সেভ করার জন্য
+                try:
+                    OrderItem.objects.create(
+                        order=order,
+                        food_id=int(item_id), # সরাসরি ফুড আইডি ব্যবহার
+                        combo=None,
+                        price=item['price'],
+                        quantity=item['qty']
+                    )
+                except (Food.DoesNotExist, ValueError):
+                    continue
 
-            OrderItem.objects.create(
-                order=order,
-                food=food,          # ✅ use ForeignKey
-                price=item['price'],
-                quantity=item['qty']
-            )
-
-        # Clear cart
+        # কার্ট খালি করা
         request.session['cart'] = {}
+        messages.success(request, "অর্ডারটি সফলভাবে সম্পন্ন হয়েছে!")
         return redirect('payment_page', order_id=order.id)
 
     return render(request, 'orders/checkout.html', {
         'cart': cart,
         'total': total
     })
+
 @login_required
 def payment_page(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)

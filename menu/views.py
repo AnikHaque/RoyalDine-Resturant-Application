@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404,redirect
-from .models import Category
+from .models import Category, ComboDeal
 from django.contrib import messages
 # আগের ইমপোর্টের সাথে শুধু ComboDeal টা কমা দিয়ে যোগ করে দিন
 
@@ -20,4 +20,29 @@ def category_items(request, category_id):
     return render(request, "category_items.html", context)
 
 
+def add_combo_to_cart(request, combo_id):
+    combo = get_object_or_404(ComboDeal, id=combo_id)
+    cart = request.session.get('cart', {})
+    
+    item_id = f"combo_{combo.id}"
 
+    if item_id in cart:
+        # নিশ্চিত করছি পুরনো ডাটা থাকলেও যেন নাম্বার হিসেবে যোগ হয়
+        current_qty = int(cart[item_id]['qty'])
+        cart[item_id]['qty'] = current_qty + 1
+    else:
+        # নতুন আইটেম অ্যাড
+        cart[item_id] = {
+            'product_id': int(combo.id),
+            'name': str(combo.name),
+            'price': float(combo.discount_price), # ক্যালকুলেশনের জন্য ফ্লোট
+            'qty': 1,
+            'image': combo.image.url if combo.image else '',
+            'is_combo': True
+        }
+
+    request.session['cart'] = cart
+    request.session.modified = True
+    messages.success(request, f"{combo.name} কার্টে যোগ করা হয়েছে!")
+    
+    return redirect('cart') # আপনার কার্ট ইউআরএল এর নাম নিশ্চিত করুন

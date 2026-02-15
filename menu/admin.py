@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Food, Offer
+from .models import Category, Food, Offer, ComboDeal
 from django.utils.html import format_html
 
 @admin.register(Category)
@@ -67,4 +67,8 @@ class OfferAdmin(admin.ModelAdmin):
 
     status_badge.short_description = "Status"
 
-
+@admin.register(ComboDeal)
+class ComboDealAdmin(admin.ModelAdmin):
+    list_display = ('name', 'original_price', 'discount_price', 'is_active')
+    list_filter = ('is_active',)
+    search_fields = ('name',)

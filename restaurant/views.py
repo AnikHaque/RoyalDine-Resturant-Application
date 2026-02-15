@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
 from menu.forms import TestimonialForm
-from menu.models import Category, Food, Offer, Testimonial
+from menu.models import Category, ComboDeal, Food, Offer, Testimonial
 from blog.models import Blog
 from orders.models import OrderItem
 from django.contrib import messages
@@ -50,7 +50,7 @@ def home(request):
         .select_related('food')
     )
 
-    
+    combos = ComboDeal.objects.filter(is_active=True)
     testimonials = Testimonial.objects.all().order_by('-created_at')
     blogs = Blog.objects.filter(is_published=True).order_by('-created_at')[:6]
     context = {
@@ -59,7 +59,8 @@ def home(request):
         "today_specials": today_specials,
         "offers": offers,
         'testimonials': testimonials,
-        'blogs': blogs
+        'blogs': blogs,
+        'combos': combos,
        
     }
 
