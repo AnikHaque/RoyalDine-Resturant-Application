@@ -1,70 +1,107 @@
 {% extends "accounts/dashboard/base_dashboard.html" %}
 
 {% block sidebar %}
-    <a href="{% url 'staff_analytics' %}">
-    📊 Analytics
-</a>
-<a href="{% url 'staff_inventory' %}">
-    📦 Inventory
-</a>
-<a href="{% url 'staff_top_selling' %}">
-    🍽️ Top Selling
-</a>
-<a href="{% url 'staff_dashboard' %}">
-    🧾 All Orders
-</a>
-<a href="{% url 'staff_dashboard' %}?status=PAID">
-    ✅ Completed Orders
-</a>
-<a href="{% url 'staff_dashboard' %}?status=PENDING">
-    ⏳ Pending Orders
-</a>
+    <a href="{% url 'staff_analytics' %}" class="{% if request.resolver_match.url_name == 'staff_analytics' %}active{% endif %}">
+        <i class="fa-solid fa-chart-pie me-2"></i> Analytics
+    </a>
+    <a href="{% url 'staff_inventory' %}" class="{% if request.resolver_match.url_name == 'staff_inventory' %}active{% endif %}">
+        <i class="fa-solid fa-boxes-stacked me-2"></i> Inventory
+    </a>
+    <a href="{% url 'staff_top_selling' %}" class="{% if request.resolver_match.url_name == 'staff_top_selling' %}active{% endif %}">
+        <i class="fa-solid fa-fire me-2"></i> Top Selling
+    </a>
+    
+    <a href="{% url 'staff_dashboard' %}" class="{% if request.resolver_match.url_name == 'staff_dashboard' and not request.GET.status %}active{% endif %}">
+        <i class="fa-solid fa-receipt me-2"></i> All Orders
+    </a>
+    
+    <a href="{% url 'staff_dashboard' %}?status=PAID" class="{% if request.GET.status == 'PAID' %}active{% endif %}">
+        <i class="fa-solid fa-circle-check me-2"></i> Completed Orders
+    </a>
+    
+    <a href="{% url 'staff_dashboard' %}?status=PENDING" class="{% if request.GET.status == 'PENDING' %}active{% endif %}">
+        <i class="fa-solid fa-clock me-2"></i> Pending Orders
+    </a>
 
-    <a href="{% url 'staff_blog_list' %}" class="list-group-item list-group-item-action">Manage Blogs</a>
-    <a href="{% url 'staff_create_blog' %}" class="list-group-item list-group-item-action text-danger fw-bold">+ Create New Blog</a>
+    <hr style="background-color: rgba(255,255,255,0.1)">
 
+    <a href="{% url 'staff_blog_list' %}" class="{% if request.resolver_match.url_name == 'staff_blog_list' %}active{% endif %}">
+        <i class="fa-solid fa-newspaper me-2"></i> Manage Blogs
+    </a>
+    <a href="{% url 'staff_create_blog' %}" class="{% if request.resolver_match.url_name == 'staff_create_blog' %}active{% endif %} text-warning fw-bold">
+        <i class="fa-solid fa-plus-circle me-2"></i> Create New Blog
+    </a>
 {% endblock %}
 
 {% block content %}
-<h2>
-    {% if request.GET.status %}
-        {% if request.GET.status == "PAID" %}Completed Orders{% elif request.GET.status == "PENDING" %}Pending Orders{% endif %}
-    {% else %}All Orders{% endif %}
-</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold m-0">
+        {% if request.GET.status %}
+            {% if request.GET.status == "PAID" %}Completed Orders{% elif request.GET.status == "PENDING" %}Pending Orders{% endif %}
+        {% else %}All Orders{% endif %}
+    </h2>
+    <span class="badge bg-danger rounded-pill px-3 py-2">Total: {{ orders|length }}</span>
+</div>
 
-{% if orders %}
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Total</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for order in orders %}
-        <tr>
-            <td>{{ order.id }}</td>
-            <td>{{ order.user.username }}</td>
-            <td>${{ order.total_price }}</td>
-            <td >{{ order.status }}</td>
-            <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
-            <td>
-                {% if order.status != "PAID" %}
-                <a href="{% url 'mark_paid' order.id %}" class="btn btn-success btn-sm">Mark Paid</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-{% else %}
-<p>No orders found.</p>
-{% endif %}
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="bg-light">
+                <tr class="text-muted small fw-bold">
+                    <th class="ps-4 py-3">ID</th>
+                    <th class="py-3">CUSTOMER</th>
+                    <th class="py-3">TOTAL</th>
+                    <th class="py-3">STATUS</th>
+                    <th class="py-3">DATE</th>
+                    <th class="text-center pe-4 py-3">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr class="border-bottom">
+                    <td class="ps-4 py-4">
+                        <span class="fw-bold">#ORD-{{ order.id }}</span>
+                    </td>
+                    <td class="py-4 text-dark">{{ order.user.username }}</td>
+                    <td class="py-4 fw-bold text-dark">৳{{ order.total_price }}</td>
+                    <td class="py-4">
+                        {% if order.status == "PAID" %}
+                            <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">Paid</span>
+                        {% else %}
+                            <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-4 text-muted small">
+                        {{ order.created_at|date:"M d, Y" }}<br>
+                        <span class="x-small">{{ order.created_at|date:"H:i A" }}</span>
+                    </td>
+                    <td class="text-center pe-4 py-4">
+                        {% if order.status != "PAID" %}
+                        <a href="{% url 'mark_paid' order.id %}" class="btn btn-success btn-sm rounded-pill px-3 shadow-sm">
+                            <i class="fa-solid fa-check-double me-1"></i> Mark Paid
+                        </a>
+                        {% else %}
+                        <span class="text-muted small"><i class="fa-solid fa-lock me-1"></i> No Action</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-muted">
+                        <i class="fa-solid fa-inbox d-block mb-3 fs-1 opacity-25"></i>
+                        No orders found.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-
+<style>
+    .bg-success-subtle { background-color: #e8f5e9; }
+    .bg-warning-subtle { background-color: #fff3e0; }
+    .x-small { font-size: 0.75rem; }
+    .table tbody tr:hover { background-color: #fafafa; }
+</style>
 {% endblock %}
-
