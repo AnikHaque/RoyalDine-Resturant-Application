@@ -1,152 +1,240 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Menu{% endblock %}
+{% block title %}Our Exquisite Menu | Gemini Restaurant{% endblock %}
 
 {% block content %}
 <style>
-/* ===== Menu Section ===== */
-.menu-section {
-    background: #f4f6f9;
-    min-height: 100vh;
-    padding-bottom: 50px;
-}
+    :root {
+        --primary-color: #ff4757;
+        --dark-color: #1e272e;
+        --light-gray: #f8f9fa;
+        --gold: #ffa502;
+    }
 
-.section-title {
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: #343a40;
-    position: relative;
-    display: inline-block;
-}
+    /* --- Hero Header Section --- */
+    .menu-header {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                    url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1350&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        padding: 120px 0 80px;
+        text-align: center;
+        color: white;
+    }
 
-.section-title::after {
-    content: '';
-    width: 70px;
-    height: 4px;
-    background: #ff7f50;
-    display: block;
-    margin: 12px auto 0;
-    border-radius: 2px;
-}
+    .menu-header h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        font-weight: 900;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }
 
-.category-title {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #555;
-    margin-bottom: 25px;
-    border-bottom: 2px solid #ff7f50;
-    display: inline-block;
-    padding-bottom: 5px;
-}
+    .menu-header p {
+        font-size: 1.2rem;
+        font-weight: 300;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--gold);
+    }
 
-.food-card {
-    background: linear-gradient(145deg, #fff, #f1f3f6);
-    border-radius: 20px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
-}
+    /* --- Filter Bar Style --- */
+    .filter-wrapper {
+        background: white;
+        margin-top: -40px;
+        padding: 20px;
+        border-radius: 100px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        display: inline-block;
+        position: relative;
+        z-index: 10;
+    }
 
-.food-card:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-}
+    .filter-btn {
+        border: none;
+        background: transparent;
+        color: var(--dark-color);
+        padding: 12px 30px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        border-radius: 50px;
+        transition: 0.4s;
+        text-transform: uppercase;
+    }
 
-.food-img {
-    position: relative;
-    height: 240px;
-    overflow: hidden;
-    border-bottom: 1px solid #ddd;
-}
+    .filter-btn.active {
+        background: var(--primary-color);
+        color: white;
+        box-shadow: 0 8px 20px rgba(255, 71, 87, 0.3);
+    }
 
-.food-img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
+    /* --- Food Grid & Card --- */
+    .food-item {
+        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
 
-.food-card:hover .food-img img {
-    transform: scale(1.15);
-}
+    .food-card {
+        background: white;
+        border-radius: 30px;
+        overflow: hidden;
+        border: none;
+        height: 100%;
+        transition: 0.4s;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        position: relative;
+    }
 
-.price-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    color: black;
-    padding: 10px 16px;
-    font-weight: 700;
-    border-radius: 50px;
-    font-size: 1rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
+    .food-card:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+    }
 
-.food-body {
-    padding: 20px;
-    text-align: center;
-}
+    .image-holder {
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
 
-.food-body h5 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: #333;
-}
+    .image-holder img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: 0.6s;
+    }
 
-.food-body p {
-    font-size: 0.95rem;
-    color: #6c757d;
-    min-height: 50px;
-    margin-bottom: 15px;
-}
+    .food-card:hover .image-holder img {
+        transform: scale(1.1) rotate(2deg);
+    }
 
-.food-body .btn {
-    font-weight: 700;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-}
+    .price-circle {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: var(--primary-color);
+        color: white;
+        width: 65px;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: 800;
+        font-size: 1.1rem;
+        box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+        border: 4px solid white;
+    }
 
-.food-body .btn:hover {
-    background: #ff7f50;
-    color: #fff;
-    border-color: #ff7f50;
-}
+    .content-box {
+        padding: 30px 25px;
+        text-align: center;
+    }
+
+    .content-box h5 {
+        font-weight: 800;
+        font-size: 1.4rem;
+        color: var(--dark-color);
+        margin-bottom: 12px;
+    }
+
+    .content-box p {
+        color: #777;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 25px;
+    }
+
+    .add-to-cart-btn {
+        background: var(--dark-color);
+        color: white;
+        padding: 12px 25px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        transition: 0.3s;
+        border: 2px solid var(--dark-color);
+    }
+
+    .add-to-cart-btn:hover {
+        background: transparent;
+        color: var(--dark-color);
+    }
+
+    .hidden { display: none; }
 </style>
 
-<section class="menu-section py-5 mt-5">
-  <div class="container">
-    <div class="text-center mb-5">
-      <h2 class="section-title">Our Menu</h2>
-      <p class="text-muted">Handcrafted dishes made with love</p>
+<header class="menu-header">
+    <div class="container">
+        <p>Discovery</p>
+        <h1>OUR SPECIALTIES</h1>
     </div>
+</header>
 
-    {% for category in categories %}
-      <h4 class="category-title mt-5">{{ category.name }}</h4>
-
-      <div class="row g-4 mt-2">
-        {% for food in category.foods.all %}
-          {% if food.is_available %}
-          <div class="col-lg-3 col-md-6">
-            <div class="food-card">
-              <div class="food-img">
-                <img src="{{ food.image.url }}" alt="{{ food.name }}">
-                <span class="price-badge btn btn-warning">${{ food.price }}</span>
-              </div>
-              <div class="food-body">
-                <h5>{{ food.name }}</h5>
-                <p>{{ food.description|truncatechars:100 }}</p>
-                <a href="{% url 'add_to_cart' food.id %}" class="btn btn-outline-warning w-100">
-                  Add to Cart
-                </a>
-              </div>
-            </div>
-          </div>
-          {% endif %}
+<div class="container text-center mb-5">
+    <div class="filter-wrapper">
+        <button class="filter-btn active" onclick="filterMenu('all', this)">All</button>
+        {% for category in categories %}
+            <button class="filter-btn" onclick="filterMenu('{{ category.name|slugify }}', this)">
+                {{ category.name }}
+            </button>
         {% endfor %}
-      </div>
-    {% endfor %}
-  </div>
-</section>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row g-5" id="menu-grid">
+        {% for category in categories %}
+            {% for food in category.foods.all %}
+                {% if food.is_available %}
+                <div class="col-xl-4 col-lg-4 col-md-6 food-item {{ category.name|slugify }}">
+                    <div class="food-card">
+                        <div class="image-holder">
+                            <img src="{{ food.image.url }}" alt="{{ food.name }}">
+                            <div class="price-circle">৳{{ food.price }}</div>
+                        </div>
+                        <div class="content-box">
+                            <h5>{{ food.name }}</h5>
+                            <p>{{ food.description|truncatechars:80 }}</p>
+                            <a href="{% url 'add_to_cart' food.id %}" class="add-to-cart-btn">
+                                <i class="fa-solid fa-basket-shopping"></i> ADD TO CART
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    function filterMenu(category, button) {
+        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const items = document.querySelectorAll('.food-item');
+        
+        items.forEach(item => {
+            item.style.opacity = '0';
+            item.style.transform = 'translateY(20px)';
+
+            setTimeout(() => {
+                if (category === 'all' || item.classList.contains(category)) {
+                    item.classList.remove('hidden');
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 50);
+                } else {
+                    item.classList.add('hidden');
+                }
+            }, 300);
+        });
+    }
+</script>
 {% endblock %}
