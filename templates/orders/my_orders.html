@@ -3,12 +3,24 @@
 {% block title %}Dashboard | Welcome {{ request.user.username }}{% endblock %}
 
 {% block sidebar %}
-    <a href="{% url 'customer_dashboard' %}" class="active"><i class="fas fa-chart-line me-2"></i> Analytics</a>
-    <a href="{% url 'my_orders' %}"><i class="fas fa-shopping-bag me-2"></i> My Orders</a>
-    <a href="{% url 'create_reservation' %}"><i class="fas fa-calendar-plus me-2"></i> Book Table</a>
-    <a href="{% url 'reservation_list' %}"><i class="fas fa-list-ul me-2"></i> My Reservations</a>
-    <a href="{% url 'add_review' %}"><i class="fas fa-pen-fancy me-2"></i> Create Review</a>
-    <a href="{% url 'my_testimonials' %}"><i class="fas fa-star me-2"></i> My Reviews</a>
+    <a href="{% url 'customer_dashboard' %}" class="{% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
+        <i class="fa-solid fa-chart-line"></i> Analytics
+    </a>
+    <a href="{% url 'my_orders' %}" class="{% if request.resolver_match.url_name == 'my_orders' %}active{% endif %}">
+        <i class="fa-solid fa-shopping-bag"></i> My Orders
+    </a>
+    <a href="{% url 'create_reservation' %}" class="{% if request.resolver_match.url_name == 'create_reservation' %}active{% endif %}">
+        <i class="fa-solid fa-calendar-plus"></i> Book Table
+    </a>
+    <a href="{% url 'reservation_list' %}" class="{% if request.resolver_match.url_name == 'reservation_list' %}active{% endif %}">
+        <i class="fa-solid fa-list-ul"></i> My Reservations
+    </a>
+    <a href="{% url 'add_review' %}" class="{% if request.resolver_match.url_name == 'add_review' %}active{% endif %}">
+        <i class="fa-solid fa-pen-fancy"></i> Create Review
+    </a>
+    <a href="{% url 'my_testimonials' %}" class="{% if request.resolver_match.url_name == 'my_testimonials' %}active{% endif %}">
+        <i class="fa-solid fa-star"></i> My Reviews
+    </a>
 {% endblock %}
 
 {% block content %}
@@ -20,7 +32,7 @@
         </div>
         <div class="col-md-6 text-md-end">
             <a href="{% url 'menu' %}" class="btn btn-danger px-4 py-2 fw-bold shadow-sm rounded-3">
-                <i class="fas fa-plus me-2"></i>New Order
+                <i class="fa-solid fa-plus me-2"></i>New Order
             </a>
         </div>
     </div>
@@ -50,7 +62,7 @@
                         </td>
 
                         <td class="py-4 fw-bold text-dark">
-                            ${{ order.total_price }}
+                            ৳{{ order.total_price }}
                         </td>
 
                         <td class="py-4">
@@ -64,14 +76,14 @@
                         <td class="text-end pe-4 py-4">
                             <div class="d-flex justify-content-end gap-2">
                                 <a href="#" class="btn btn-outline-dark btn-sm px-3 rounded-pill fw-bold">
-                                    <i class="fas fa-file-invoice me-1"></i> Invoice
+                                    <i class="fa-solid fa-file-invoice me-1"></i> Invoice
                                 </a>
 
                                 <form action="{% url 'delete_order' order.id %}" method="POST" style="display:inline;">
                                     {% csrf_token %}
                                     <button type="submit" class="btn btn-danger btn-sm px-3 rounded-pill fw-bold" 
-                                            onclick="return confirm('Are you sure you want to delete order #{{ order.id }}?');">
-                                        <i class="fas fa-trash-alt"></i> Delete
+                                            onclick="return confirm('Are you sure?');">
+                                        <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </form>
                             </div>
@@ -80,7 +92,7 @@
                     {% empty %}
                     <tr>
                         <td colspan="5" class="text-center py-5 text-muted">
-                            <i class="fas fa-box-open d-block mb-3 fs-1 opacity-25"></i>
+                            <i class="fa-solid fa-box-open d-block mb-3 fs-1 opacity-25"></i>
                             <p>No order history found.</p>
                         </td>
                     </tr>
@@ -92,32 +104,9 @@
 </div>
 
 <style>
-    /* Custom Badges */
     .bg-success-subtle { background-color: #e8f5e9; }
     .bg-warning-subtle { background-color: #fff3e0; }
-    
     .x-small { font-size: 0.75rem; }
-    
-    .table tbody tr:hover {
-        background-color: #fafafa;
-    }
-
-    /* Sidebar Active Link */
-    .nav-link.active {
-        background-color: #dc3545 !important;
-        color: white !important;
-        border-radius: 8px;
-    }
-
-    .nav-link {
-        color: #444;
-        font-weight: 500;
-        transition: 0.2s;
-    }
-
-    .nav-link:hover:not(.active) {
-        background-color: #f8f9fa;
-        color: #dc3545;
-    }
+    .table tbody tr:hover { background-color: #fafafa; }
 </style>
 {% endblock %}

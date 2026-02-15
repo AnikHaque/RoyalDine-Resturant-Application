@@ -3,12 +3,35 @@
 {% block title %}Dashboard | Welcome {{ request.user.username }}{% endblock %}
 
 {% block sidebar %}
-    <a href="{% url 'customer_dashboard' %}" class="active"><i class="fas fa-chart-line me-2"></i> Analytics</a>
-    <a href="{% url 'my_orders' %}"><i class="fas fa-shopping-bag me-2"></i> My Orders</a>
-    <a href="{% url 'create_reservation' %}"><i class="fas fa-calendar-plus me-2"></i> Book Table</a>
-    <a href="{% url 'reservation_list' %}"><i class="fas fa-list-ul me-2"></i> My Reservations</a>
-    <a href="{% url 'add_review' %}"><i class="fas fa-pen-fancy me-2"></i> Create Review</a>
-    <a href="{% url 'my_testimonials' %}"><i class="fas fa-star me-2"></i> My Reviews</a>
+    <a href="{% url 'customer_dashboard' %}" 
+       class="{% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
+       <i class="fa-solid fa-chart-line"></i> Analytics
+    </a>
+
+    <a href="{% url 'my_orders' %}" 
+       class="{% if request.resolver_match.url_name == 'my_orders' %}active{% endif %}">
+       <i class="fa-solid fa-shopping-bag"></i> My Orders
+    </a>
+
+    <a href="{% url 'create_reservation' %}" 
+       class="{% if request.resolver_match.url_name == 'create_reservation' %}active{% endif %}">
+       <i class="fa-solid fa-calendar-plus"></i> Book Table
+    </a>
+
+    <a href="{% url 'reservation_list' %}" 
+       class="{% if request.resolver_match.url_name == 'reservation_list' %}active{% endif %}">
+       <i class="fa-solid fa-list-ul"></i> My Reservations
+    </a>
+
+    <a href="{% url 'add_review' %}" 
+       class="{% if request.resolver_match.url_name == 'add_review' %}active{% endif %}">
+       <i class="fa-solid fa-pen-fancy"></i> Create Review
+    </a>
+
+    <a href="{% url 'my_testimonials' %}" 
+       class="{% if request.resolver_match.url_name == 'my_testimonials' %}active{% endif %}">
+       <i class="fa-solid fa-star"></i> My Reviews
+    </a>
 {% endblock %}
 
 {% block content %}
