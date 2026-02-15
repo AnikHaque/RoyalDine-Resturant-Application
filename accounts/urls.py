@@ -18,6 +18,9 @@ urlpatterns =[
      views.update_reservation_status, name='update_reservation_status'),
      path('dashboard/blogs/', views.staff_blog_list, name='staff_blog_list'),
      path('dashboard/blogs/create/', views.staff_create_blog, name='staff_create_blog'), 
+     # accounts/urls.py তে যোগ করুন (উদাহরণ)
+     path('blogs/edit/<int:blog_id>/', views.staff_edit_blog, name='staff_edit_blog'),
+     path('blogs/delete/<int:blog_id>/', views.staff_delete_blog, name='staff_delete_blog'),
      ]
 
 

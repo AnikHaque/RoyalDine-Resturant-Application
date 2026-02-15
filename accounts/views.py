@@ -222,14 +222,6 @@ def staff_top_selling(request):
 
     return render(request, 'accounts/dashboard/staff_top_selling.html', context)
 
-@login_required
-def manager_dashboard(request):
-    if not request.user.is_superuser:
-        messages.error(request, "You are not authorized.")
-        return redirect('dashboard')
-    orders = Order.objects.all().order_by('-created_at')
-    return render(request, 'accounts/dashboard/manager_dashboard.html', {'orders': orders})
-
 
 # -------------------------------
 # Staff Action: Mark Order Paid
@@ -307,3 +299,28 @@ def staff_create_blog(request):
     # যেহেতু এই পেজটি base_dashboard কে extend করছে, 
     # তাই এটি অটোমেটিক ডানপাশে (Content Block-এ) লোড হবে।
     return render(request, 'accounts/dashboard/staff_create_blog.html')
+
+# ব্লগ এডিট করার ভিউ
+def staff_edit_blog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    if request.method == "POST":
+        blog.title = request.POST.get('title')
+        blog.category = request.POST.get('category')
+        blog.content = request.POST.get('content')
+        blog.read_time = request.POST.get('read_time')
+        blog.tags = request.POST.get('tags')
+        
+        if request.FILES.get('thumbnail'):
+            blog.thumbnail = request.FILES.get('thumbnail')
+            
+        blog.save()
+        return redirect('staff_blog_list')
+        
+    return render(request, 'accounts/dashboard/staff_create_blog.html', {'blog': blog, 'edit_mode': True})
+
+# ব্লগ ডিলিট করার ভিউ
+def staff_delete_blog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    if request.method == "POST":
+        blog.delete()
+    return redirect('staff_blog_list')
