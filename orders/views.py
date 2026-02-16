@@ -59,6 +59,28 @@ def checkout_view(request):
         'total': total
     })
 
+from django.contrib.auth.decorators import user_passes_test
+
+def is_delivery_man(user):
+    return user.groups.filter(name='Delivery Man').exists()
+
+@login_required
+@user_passes_test(is_delivery_man, login_url='home')
+def delivery_dashboard(request):
+    # শুধু এই ডেলিভারি ম্যানকে অ্যাসাইন করা অর্ডারগুলো
+    orders = Order.objects.filter(delivery_man=request.user).exclude(status='DELIVERED').order_by('-created_at')
+    return render(request, 'delivery/dashboard.html', {'orders': orders})
+
+@login_required
+@user_passes_test(is_delivery_man)
+def update_delivery_status(request, order_id, new_status):
+    order = get_object_or_404(Order, id=order_id, delivery_man=request.user)
+    if new_status in ['ON_THE_WAY', 'DELIVERED']:
+        order.status = new_status
+        order.save()
+        messages.success(request, f"Order #{order.id} status updated to {new_status}")
+    return redirect('delivery_dashboard')
+
 @login_required
 def payment_page(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
