@@ -94,3 +94,11 @@ def add_deal_to_cart(request, deal_id):
     request.session.modified = True
     messages.success(request, f"{flash_deal.title} added to your bag!")
     return redirect('home') # সরাসরি কার্ট পেজে নিয়ে যাবে
+
+
+def wishlist_page(request):
+    wishlist_ids = request.session.get('wishlist', [])
+    # আইডিগুলো দিয়ে ডাটাবেস থেকে খাবারগুলো নিয়ে আসা
+    wishlist_items = Food.objects.filter(id__in=wishlist_ids)
+    
+    return render(request, 'wishlist.html', {'wishlist_items': wishlist_items})
