@@ -1,6 +1,6 @@
 {% extends 'accounts/dashboard/base_dashboard.html' %}
 
-{% block title %}Dashboard | Welcome {{ request.user.username }}{% endblock %}
+{% block title %}Order History | {{ request.user.username }}{% endblock %}
 
 {% block sidebar %}
     <a href="{% url 'customer_dashboard' %}" class="{% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
@@ -28,7 +28,7 @@
     <div class="row mb-4 align-items-center">
         <div class="col-md-6">
             <h3 class="fw-bold text-dark m-0">Order History</h3>
-            <p class="text-muted small">Manage your past orders and download invoices.</p>
+            <p class="text-muted small">Manage your past orders and track current ones.</p>
         </div>
         <div class="col-md-6 text-md-end">
             <a href="{% url 'menu' %}" class="btn btn-danger px-4 py-2 fw-bold shadow-sm rounded-3">
@@ -43,9 +43,10 @@
                 <thead class="bg-light">
                     <tr class="text-muted small fw-bold">
                         <th class="ps-4 py-3">ORDER ID</th>
-                        <th class="py-3">DATE</th>
-                        <th class="py-3">TOTAL PRICE</th>
-                        <th class="py-3">STATUS</th>
+                        <th class="py-3">DATE & TIME</th>
+                        <th class="py-3">TOTAL</th>
+                        <th class="py-3">PAYMENT</th>
+                        <th class="py-3">DELIVERY STATUS</th>
                         <th class="text-end pe-4 py-3">ACTIONS</th>
                     </tr>
                 </thead>
@@ -57,7 +58,7 @@
                         </td>
                         
                         <td class="py-4">
-                            <div class="text-dark small">{{ order.created_at|date:"d M, Y" }}</div>
+                            <div class="text-dark small fw-bold">{{ order.created_at|date:"d M, Y" }}</div>
                             <div class="text-muted x-small">{{ order.created_at|date:"H:i A" }}</div>
                         </td>
 
@@ -66,11 +67,21 @@
                         </td>
 
                         <td class="py-4">
-                            {% if order.status == 'PAID' %}
-                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">Paid</span>
+                            {% if order.is_paid %}
+                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                    <i class="fa-solid fa-circle-check me-1"></i> Paid
+                                </span>
                             {% else %}
-                                <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">Pending</span>
+                                <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">
+                                    <i class="fa-solid fa-clock me-1"></i> Unpaid
+                                </span>
                             {% endif %}
+                        </td>
+
+                        <td class="py-4">
+                            <span class="badge bg-info-subtle text-info rounded-pill px-3 py-2">
+                                {{ order.get_status_display }}
+                            </span>
                         </td>
 
                         <td class="text-end pe-4 py-4">
@@ -78,14 +89,15 @@
                                 <a href="#" class="btn btn-outline-dark btn-sm px-3 rounded-pill fw-bold">
                                     <i class="fa-solid fa-file-invoice me-1"></i> Invoice
                                 </a>
-                                <a href="{% url 'track_order' order.id %}" class="btn btn-outline-danger btn-sm rounded-pill">
-    <i class="fas fa-map-marker-alt me-1"></i> Track Order
-</a>
+
+                                <a href="{% url 'track_order' order.id %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                    <i class="fas fa-map-marker-alt me-1"></i> Track
+                                </a>
 
                                 <form action="{% url 'delete_order' order.id %}" method="POST" style="display:inline;">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger btn-sm px-3 rounded-pill fw-bold" 
-                                            onclick="return confirm('Are you sure?');">
+                                    <button type="submit" class="btn btn-danger btn-sm px-2 rounded-pill" 
+                                            onclick="return confirm('Are you sure you want to cancel/delete this order?');">
                                         <i class="fa-solid fa-trash-can"></i>
                                     </button>
                                 </form>
@@ -94,9 +106,10 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="5" class="text-center py-5 text-muted">
+                        <td colspan="6" class="text-center py-5 text-muted">
                             <i class="fa-solid fa-box-open d-block mb-3 fs-1 opacity-25"></i>
-                            <p>No order history found.</p>
+                            <p>You haven't placed any orders yet.</p>
+                            <a href="{% url 'menu' %}" class="btn btn-sm btn-danger rounded-pill px-4">Order Now</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -107,9 +120,14 @@
 </div>
 
 <style>
-    .bg-success-subtle { background-color: #e8f5e9; }
-    .bg-warning-subtle { background-color: #fff3e0; }
-    .x-small { font-size: 0.75rem; }
-    .table tbody tr:hover { background-color: #fafafa; }
+    /* নতুন ব্যাজ কালার কোড */
+    .bg-success-subtle { background-color: #e8f5e9 !important; color: #2e7d32 !important; }
+    .bg-warning-subtle { background-color: #fff3e0 !important; color: #ef6c00 !important; }
+    .bg-info-subtle { background-color: #e0f7fa !important; color: #00838f !important; }
+    
+    .x-small { font-size: 0.7rem; }
+    .table tbody tr:hover { background-color: #fcfcfc; transition: 0.3s; }
+    .badge { font-size: 0.75rem; letter-spacing: 0.3px; }
+    .btn-sm { font-size: 0.75rem; }
 </style>
 {% endblock %}

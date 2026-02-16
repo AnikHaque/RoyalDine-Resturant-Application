@@ -4,18 +4,37 @@ from .models import Order, OrderItem
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
-    readonly_fields = ('price', 'quantity')
+    readonly_fields = ['price', 'subtotal'] # অর্ডার আইটেম যেন ভুল করে এডিট না হয়
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    # list_display এর নামগুলো মডেলের ফিল্ডের সাথে হুবহু মিলতে হবে
-    list_display = ['id', 'user', 'full_name', 'total_price', 'status', 'delivery_man', 'created_at']
-    list_filter = ['status', 'delivery_man', 'created_at']
-    list_editable = ['status', 'delivery_man'] # এখান থেকেই স্ট্যাটাস চেঞ্জ করা যাবে
-    search_fields = ['full_name', 'phone', 'id']
+    # list_display-তে 'is_paid' এবং 'delivery_man' যোগ করা হয়েছে
+    list_display = ['id', 'user', 'full_name', 'total_price', 'is_paid', 'status', 'created_at']
+    
+    # ফিল্টার করার সুবিধা বাড়ানো হয়েছে
+    list_filter = ['is_paid', 'status', 'created_at', 'delivery_man']
+    
+    # অ্যাডমিন প্যানেল থেকে সরাসরি পেইড বা স্ট্যাটাস চেঞ্জ করার জন্য list_editable
+    list_editable = ['is_paid', 'status']
+    
     inlines = [OrderItemInline]
     
-    # পাইথন লজিক: এডমিনে কাস্টম কালারড স্ট্যাটাস (Python Heavy Logic)
+    # কুইক সার্চ করার অপশন (নাম বা আইডি দিয়ে)
+    search_fields = ['id', 'full_name', 'phone']
+
+    # পাইথন লজিক: অ্যাডমিন প্যানেল থেকে সেভ করার সময় ডাটা ক্লিন করা
     def save_model(self, request, obj, form, change):
-        # অটো-অ্যাসাইন বা ইমেইল পাঠানোর লজিক এখানে যোগ করা যায়
+        if change: # যদি অর্ডার আগে থেকেই থাকে এবং এখন এডিট করা হয়
+            old_obj = Order.objects.get(pk=obj.pk)
+            
+            # লজিক ১: যদি একবার ডেলিভারি হয়ে যায়, তবে স্ট্যাটাস আর পেন্ডিং এ নেওয়া যাবে না
+            if old_obj.status == 'DELIVERED' and obj.status != 'DELIVERED':
+                obj.status = 'DELIVERED'
+            
+            # লজিক ২: পেমেন্ট ট্র্যাকিং (আপনি চাইলে এখানেও কাস্টম লজিক দিতে পারেন)
+            # যেমন: যদি স্ট্যাটাস DELIVERED হয়, অটোমেটিক is_paid = True হয়ে যাবে
+            if obj.status == 'DELIVERED':
+                obj.status = 'DELIVERED'
+                obj.is_paid = True 
+
         super().save_model(request, obj, form, change)
