@@ -38,19 +38,28 @@
           </li>
 
           {% if user.is_authenticated %}
-            {% if user.is_staff %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'staff_analytics' %}">Staff Dashboard</a>
-              </li>
-            {% else %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'customer_dashboard' %}">My Account</a>
-              </li>
-            {% endif %}
-            <li class="nav-item">
-              <a class="nav-link logout-link" href="{% url 'logout' %}">Logout</a>
-            </li>
-          {% else %}
+    {% if user|has_group:"Delivery Man" %}
+      <li class="nav-item">
+        <a class="nav-link text-warning fw-bold" href="{% url 'delivery_dashboard' %}">
+            <i class="fa-solid fa-motorcycle me-1"></i> Delivery Panel
+        </a>
+      </li>
+    {% endif %}
+
+    {% if user.is_staff %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'staff_analytics' %}">Staff Dashboard</a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'customer_dashboard' %}">My Account</a>
+      </li>
+    {% endif %}
+    
+    <li class="nav-item">
+      <a class="nav-link logout-link" href="{% url 'logout' %}">Logout</a>
+    </li>
+{% else %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'login' %}">Login</a>
             </li>

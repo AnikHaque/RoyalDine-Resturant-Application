@@ -11,31 +11,38 @@ def checkout_view(request):
     if not cart:
         return redirect('menu')
 
-    # প্রাইস এবং কোয়ান্টিটি ক্যালকুলেশন (float/int নিশ্চিত করা হয়েছে)
     total = sum(float(item['price']) * int(item['qty']) for item in cart.values())
 
     if request.method == 'POST':
+        # ফরম থেকে ডাটা নেওয়া হচ্ছে
+        full_name = request.POST.get('full_name')
+        phone = request.POST.get('phone')
+        address = request.POST.get('address')
+
+        # অর্ডার ক্রিয়েট করার সময় নতুন ফিল্ডগুলো সেভ করা
         order = Order.objects.create(
             user=request.user,
-            total_price=total
+            full_name=full_name, # নতুন ফিল্ড
+            phone=phone,         # নতুন ফিল্ড
+            address=address,     # নতুন ফিল্ড
+            total_price=total,
+            status='PENDING'
         )
 
         for item_id, item in cart.items():
             if str(item_id).startswith('combo_'):
-                # ১. কম্বো ডিল সেভ করার জন্য
                 OrderItem.objects.create(
                     order=order,
-                    food=None,  # ডাটাবেজে এখন এটি null হতে পারবে
-                    combo_id=int(item['product_id']), # সরাসরি আইডি ব্যবহার
+                    food=None,
+                    combo_id=int(item['product_id']),
                     price=item['price'],
                     quantity=item['qty']
                 )
             else:
-                # ২. নরমাল খাবার সেভ করার জন্য
                 try:
                     OrderItem.objects.create(
                         order=order,
-                        food_id=int(item_id), # সরাসরি ফুড আইডি ব্যবহার
+                        food_id=int(item_id),
                         combo=None,
                         price=item['price'],
                         quantity=item['qty']
@@ -43,9 +50,8 @@ def checkout_view(request):
                 except (Food.DoesNotExist, ValueError):
                     continue
 
-        # কার্ট খালি করা
         request.session['cart'] = {}
-        messages.success(request, "অর্ডারটি সফলভাবে সম্পন্ন হয়েছে!")
+        messages.success(request, "অর্ডারটি সফলভাবে সম্পন্ন হয়েছে!")
         return redirect('payment_page', order_id=order.id)
 
     return render(request, 'orders/checkout.html', {
