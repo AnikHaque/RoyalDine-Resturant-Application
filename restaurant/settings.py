@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 # ২. সাইট আইডি (জ্যাঙ্গো সাইট ফ্রেমওয়ার্কের জন্য)
