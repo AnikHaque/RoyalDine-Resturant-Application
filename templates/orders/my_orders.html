@@ -78,6 +78,9 @@
                                 <a href="#" class="btn btn-outline-dark btn-sm px-3 rounded-pill fw-bold">
                                     <i class="fa-solid fa-file-invoice me-1"></i> Invoice
                                 </a>
+                                <a href="{% url 'track_order' order.id %}" class="btn btn-outline-danger btn-sm rounded-pill">
+    <i class="fas fa-map-marker-alt me-1"></i> Track Order
+</a>
 
                                 <form action="{% url 'delete_order' order.id %}" method="POST" style="display:inline;">
                                     {% csrf_token %}

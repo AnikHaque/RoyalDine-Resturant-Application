@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .step-wizard { display: flex; justify-content: space-between; position: relative; margin-bottom: 30px; }
+    .step-wizard::before { content: ""; position: absolute; top: 25px; left: 0; width: 100%; height: 4px; background: #ddd; z-index: 1; }
+    .step-item { z-index: 2; text-align: center; width: 25%; }
+    .step-icon { width: 50px; height: 50px; border-radius: 50%; background: #ddd; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; transition: 0.4s; }
+    .active .step-icon { background: #ff4757; color: white; box-shadow: 0 0 15px rgba(255, 71, 87, 0.5); }
+    .step-label { font-size: 12px; font-weight: 600; color: #777; }
+    .active .step-label { color: #ff4757; }
+</style>
+
+<div class="container py-5 mt-5">
+    <div class="card card-custom p-4 shadow-sm border-0">
+        <h3 class="fw-bold mb-4">Track Order #{{ order.id }}</h3>
+
+        <div class="step-wizard">
+            <div class="step-item {% if order.status %}active{% endif %}">
+                <div class="step-icon"><i class="fas fa-receipt"></i></div>
+                <div class="step-label">Pending</div>
+            </div>
+            <div class="step-item {% if order.status == 'PREPARING' or order.status == 'ON_THE_WAY' or order.status == 'DELIVERED' %}active{% endif %}">
+                <div class="step-icon"><i class="fas fa-utensils"></i></div>
+                <div class="step-label">Preparing</div>
+            </div>
+            <div class="step-item {% if order.status == 'ON_THE_WAY' or order.status == 'DELIVERED' %}active{% endif %}">
+                <div class="step-icon"><i class="fas fa-motorcycle"></i></div>
+                <div class="step-label">On The Way</div>
+            </div>
+            <div class="step-item {% if order.status == 'DELIVERED' %}active{% endif %}">
+                <div class="step-icon"><i class="fas fa-check-double"></i></div>
+                <div class="step-label">Delivered</div>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <h5 class="fw-bold">Delivery Info</h5>
+                <hr>
+                <p><strong>Name:</strong> {{ order.full_name }}</p>
+                <p><strong>Address:</strong> {{ order.address }}</p>
+                {% if order.delivery_man %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-user-tag me-2"></i> <strong>Delivery Executive:</strong> {{ order.delivery_man.username }}
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-end">
+                <h5 class="fw-bold">Order Summary</h5>
+                <hr>
+                <p><strong>Total Price:</strong> ৳ {{ order.total_price }}</p>
+                <p><strong>Status:</strong> <span class="badge bg-danger">{{ order.status }}</span></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
