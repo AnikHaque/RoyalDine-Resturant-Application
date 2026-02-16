@@ -222,17 +222,6 @@ def staff_delete_blog(request, blog_id):
         blog.delete()
     return redirect('staff_blog_list')
 
-from django.shortcuts import render
 from .models import AboutStory, AboutFeature, Chef
 
-def about_view(request):
-    story = AboutStory.objects.first() # যেহেতু গল্প একটাই থাকবে
-    features = AboutFeature.objects.all()[:3] # প্রথম ৩টি ফিচার
-    chefs = Chef.objects.all().order_by('order')
-    
-    context = {
-        'story': story,
-        'features': features,
-        'chefs': chefs
-    }
-    return render(request, 'about.html', context)
+

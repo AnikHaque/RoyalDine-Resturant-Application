@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
+from accounts.models import AboutFeature, AboutStory, Chef
 from menu.forms import TestimonialForm
 from menu.models import Category, ComboDeal, Food, Offer, Testimonial
 from blog.models import Blog
@@ -85,7 +86,16 @@ def my_testimonials(request):
     return render(request, 'my_testimonials.html', {'my_testimonials': user_testimonials})
 
 
-# views.py তে
-def about_view(request):
-    return render(request, 'about.html') # আপনার ফাইলটির নাম যা দিয়েছেন
+def about(request):
+    story = AboutStory.objects.first() # ডাটাবেস থেকে প্রথম স্টোরিটা নিচ্ছে
+    features = AboutFeature.objects.all() # সব ফিচার নিচ্ছে
+    chefs = Chef.objects.all().order_by('order') # সব শেফ নিচ্ছে
+    
+    # এই context ডিকশনারিটিই ডাটাগুলোকে HTML এ পাঠায়
+    context = {
+        'story': story,
+        'features': features,
+        'chefs': chefs
+    }
+    return render(request, 'about.html', context)
 

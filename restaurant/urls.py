@@ -11,7 +11,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('social-auth/', include('allauth.urls')),
     path('', home, name='home'),
-    path('about/', views.about_view, name='about'),
+    path('about/', views.about, name='about'),
     path('menu/', include('menu.urls')),
     path('accounts/', include('accounts.urls')),
     path('cart/', include('cart.urls')),
