@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Category, Food, Offer, ComboDeal
+from .models import Category, Food, Offer, ComboDeal,FlashDeal
 from django.utils.html import format_html
 
 @admin.register(Category)
@@ -89,3 +89,7 @@ class ComboDealAdmin(admin.ModelAdmin):
     def promo_price_tag(self, obj):
         return format_html('<b style="color: #1e90ff;">৳{}</b>', obj.discount_price)
     promo_price_tag.short_description = "Combo Price"
+
+@admin.register(FlashDeal)
+class FlashDealAdmin(admin.ModelAdmin):
+    list_display = ('title', 'end_time', 'is_active')

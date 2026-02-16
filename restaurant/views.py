@@ -7,6 +7,7 @@ from blog.models import Blog
 from orders.models import OrderItem
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from menu.models import FlashDeal
 
 def home(request):
     # Categories with available food count
@@ -47,7 +48,7 @@ def home(request):
     combos = ComboDeal.objects.filter(is_active=True)
     testimonials = Testimonial.objects.all().order_by('-created_at')
     blogs = Blog.objects.filter(is_published=True).order_by('-created_at')[:6]
-
+    flash_deal = FlashDeal.objects.filter(is_active=True).first()
     context = {
         "categories": categories,
         "top_selling": top_selling,
@@ -56,6 +57,7 @@ def home(request):
         'testimonials': testimonials,
         'blogs': blogs,
         'combos': combos,
+        'flash_deal':flash_deal
     }
 
     return render(request, "home.html", context)

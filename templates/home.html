@@ -607,12 +607,18 @@
                         </div>
                     </div>
                     
-                    <a href="{% url 'menu' %}" class="btn btn-danger btn-lg px-5 rounded-pill fw-bold shadow">Grab Deal Now</a>
+           {% if flash_deal %}
+    <a href="{% url 'add_deal_to_cart' flash_deal.id %}" class="btn btn-danger btn-lg px-5 rounded-pill fw-bold shadow">
+        Claim This Deal Now
+    </a>
+{% else %}
+    <p>No active deals at the moment!</p>
+{% endif %}
                 </div>
                 
                 <div class="col-lg-5 text-center mt-5 mt-lg-0">
                     <div class="image-stack position-relative">
-                        <img src="https://img.freepik.com/free-photo/gourmet-burger-with-fries-drink_23-2150770335.jpg" 
+                        <img src="https://www.kailashparbat.com.sg/images/menu/super-saver-combo-2.jpg" 
                              class="img-fluid rounded-4 shadow-lg border border-5 border-dark" 
                              style="max-height: 300px; transform: rotate(2deg);" alt="Mega Combo">
                         <div class="discount-tag">40% OFF</div>

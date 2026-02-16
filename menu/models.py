@@ -96,3 +96,20 @@ class ComboDeal(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class FlashDeal(models.Model):
+    title = models.CharField(max_length=200, default='The "Gemini" Mega Combo')
+    description = models.TextField()
+    discount_text = models.CharField(max_length=50, default='40% OFF')
+    image = models.ImageField(upload_to='deals/')
+    end_time = models.DateTimeField() # এই সময় পর্যন্ত টাইমার চলবে
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def time_remaining(self):
+        # সময় বাকি আছে কি না চেক করার জন্য
+        return self.end_time > timezone.now()

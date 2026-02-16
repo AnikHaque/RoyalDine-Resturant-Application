@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404,redirect
-from .models import Category, ComboDeal, Testimonial
+from .models import Category, ComboDeal, FlashDeal, Testimonial
 from django.contrib import messages
 # আগের ইমপোর্টের সাথে শুধু ComboDeal টা কমা দিয়ে যোগ করে দিন
 
@@ -70,3 +70,27 @@ def delete_testimonial(request, pk):
     return render(request, 'dashboard/confirm_delete.html', {'testimonial': testimonial})
 
 
+def add_deal_to_cart(request, deal_id):
+    flash_deal = get_object_or_404(FlashDeal, id=deal_id)
+    cart = request.session.get('cart', {})
+    
+    # ডিলের জন্য একটি ইউনিক আইডি তৈরি করি (যাতে সাধারণ খাবারের সাথে না মিলে যায়)
+    deal_key = f"deal_{flash_deal.id}"
+    
+    if deal_key in cart:
+        cart[deal_key]['qty'] += 1
+    else:
+        # এখানে দামটা তুমি তোমার ডিল অনুযায়ী সেট করে দিবে (যেমন ৯৯৯ টাকা)
+        cart[deal_key] = {
+            'product_id': flash_deal.id,
+            'name': flash_deal.title,
+            'price': 999.0, # অথবা flash_deal মডেলে একটা price ফিল্ড নিতে পারো
+            'qty': 1,
+            'image': flash_deal.image.url if flash_deal.image else '',
+            'is_deal': True
+        }
+    
+    request.session['cart'] = cart
+    request.session.modified = True
+    messages.success(request, f"{flash_deal.title} added to your bag!")
+    return redirect('home') # সরাসরি কার্ট পেজে নিয়ে যাবে
