@@ -12,6 +12,7 @@ urlpatterns = [
     path('social-auth/', include('allauth.urls')),
     path('', home, name='home'),
     path('about/', views.about, name='about'),
+    path('contact/', views.contact_view, name='contact'),
     path('menu/', include('menu.urls')),
     path('accounts/', include('accounts.urls')),
     path('cart/', include('cart.urls')),

@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
-from accounts.models import AboutFeature, AboutStory, Chef
+from accounts.models import AboutFeature, AboutStory, Chef, ContactMessage
 from menu.forms import TestimonialForm
 from menu.models import Category, ComboDeal, Food, Offer, Testimonial
 from blog.models import Blog
@@ -98,4 +98,21 @@ def about(request):
         'chefs': chefs
     }
     return render(request, 'about.html', context)
+
+
+def contact_view(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        
+        # মেসেজ সেভ করার লজিক
+        ContactMessage.objects.create(
+            name=name, email=email, subject=subject, message=message
+        )
+        messages.success(request, 'Your message has been sent successfully!')
+        return redirect('contact')
+        
+    return render(request, 'contact.html')
 
