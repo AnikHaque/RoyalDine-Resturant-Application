@@ -21,6 +21,7 @@ urlpatterns = [
     path('add-review/', views.add_review, name='add_review'),
     path('blogs/', include('blog.urls')),
     path('booking/', include('tablebooking.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 # 👇 THIS MUST BE AT THE BOTTOM

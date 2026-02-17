@@ -57,7 +57,14 @@ body {
   margin-bottom: 15px;
 }
 
-
+#chat-box::-webkit-scrollbar {
+    width: 6px;
+}
+#chat-box::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+.rounded-4 { border-radius: 1rem !important; }
 
 
 

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5 mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="fw-bold mb-0">Messages</h5>
+                </div>
+                <div class="list-group list-group-flush" style="max-height: 500px; overflow-y: auto;">
+                    {% for convo in conversations %}
+                        {% with other_user=convo.participants.all|dictsort:"id" %}
+                        <a href="{% url 'chat_detail' convo.id %}" class="list-group-item list-group-item-action py-3 border-0">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 fw-bold">
+                                        {% for user in convo.participants.all %}
+                                            {% if user != request.user %}{{ user.username }}{% endif %}
+                                        {% endfor %}
+                                    </h6>
+                                    <small class="text-muted">{{ convo.messages.last.text|truncatechars:30 }}</small>
+                                </div>
+                            </div>
+                        </a>
+                        {% endwith %}
+                    {% empty %}
+                        <p class="text-center p-4">No conversations yet.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 rounded-4 p-4">
+                <h5 class="fw-bold mb-4">Start a New Conversation</h5>
+                <div class="row g-3">
+                    {% for user in all_users %}
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center p-3 border rounded-3">
+                            <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                {{ user.username|first|upper }}
+                            </div>
+                            <div class="ms-3 flex-grow-1">
+                                <h6 class="mb-0">{{ user.username }}</h6>
+                                <small class="text-muted">{{ user.groups.first.name|default:"Member" }}</small>
+                            </div>
+                            <a href="{% url 'start_chat' user.id %}" class="btn btn-sm btn-outline-primary rounded-pill">Chat</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
