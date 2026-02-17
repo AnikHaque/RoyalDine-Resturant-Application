@@ -123,22 +123,34 @@
         <div class="row align-items-center">
             <div class="col-lg-6 mb-5 mb-lg-0">
                 <div class="position-relative">
-                    <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&fit=crop&w=800" class="img-fluid rounded-5 shadow-lg" alt="Chef Image">
+                    <img src="{% if about.image %}{{ about.image.url }}{% else %}https://via.placeholder.com/800{% endif %}" class="img-fluid rounded-5 shadow-lg" alt="Chef Image">
+                    
                     <div class="position-absolute top-50 start-50 translate-middle">
                         <div class="bg-white p-2 rounded-circle shadow-lg d-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
-                            <span class="text-primary fw-bold h3 mb-0">12Y</span>
+                            <span class="text-primary fw-bold h3 mb-0">{{ about.experience_years }}</span>
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div class="col-lg-6 ps-lg-5">
-                <span class="text-primary fw-bold text-uppercase">The Legacy</span>
-                <h2 class="playfair display-4 fw-bold mt-2 mb-4">Every Flavor Tells <br>A Royal Story</h2>
-                <p class="text-muted lead">Founded on the principles of authenticity and luxury, we've spent over a decade perfecting the art of fine dining. Our kitchen is where tradition meets innovation.</p>
+                <span class="text-primary fw-bold text-uppercase">{{ about.legacy_tag }}</span>
+                <h2 class="playfair display-4 fw-bold mt-2 mb-4">{{ about.title|safe }}</h2>
+                <p class="text-muted lead">{{ about.description }}</p>
+                
                 <div class="row mt-5">
-                    <div class="col-4 border-end"><h3 class="fw-bold mb-0">50+</h3><small class="text-muted">Master Recipes</small></div>
-                    <div class="col-4 border-end ps-4"><h3 class="fw-bold mb-0">20+</h3><small class="text-muted">Expert Chefs</small></div>
-                    <div class="col-4 ps-4"><h3 class="fw-bold mb-0">100%</h3><small class="text-muted">Satisfaction</small></div>
+                    <div class="col-4 border-end">
+                        <h3 class="fw-bold mb-0">{{ about.stat1_count }}</h3>
+                        <small class="text-muted">{{ about.stat1_label }}</small>
+                    </div>
+                    <div class="col-4 border-end ps-4">
+                        <h3 class="fw-bold mb-0">{{ about.stat2_count }}</h3>
+                        <small class="text-muted">{{ about.stat2_label }}</small>
+                    </div>
+                    <div class="col-4 ps-4">
+                        <h3 class="fw-bold mb-0">{{ about.stat3_count }}</h3>
+                        <small class="text-muted">{{ about.stat3_label }}</small>
+                    </div>
                 </div>
             </div>
         </div>

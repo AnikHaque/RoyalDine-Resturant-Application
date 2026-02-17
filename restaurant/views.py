@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.db.models import Count, Sum, Q
 from django.utils import timezone
 from accounts.models import AboutFeature, AboutStory, Chef, ContactMessage
-from core.models import HeroSection, RestaurantFeature
+from core.models import AboutSection, HeroSection, RestaurantFeature
 from menu.forms import TestimonialForm
 from menu.models import Category, ComboDeal, Food, Offer, Testimonial
 from blog.models import Blog
@@ -55,9 +55,11 @@ def home(request):
     # core অ্যাপের মডেল থেকে ডাটা নিয়ে আসা
     hero = HeroSection.objects.filter(is_active=True).last()
     features = RestaurantFeature.objects.all()
+    about = AboutSection.objects.last() # লাস্ট ডাটাটি নিবে
     context = {
        'hero': hero,
         'features': features,
+        'about': about,
         "categories": categories,
         "top_selling": top_selling,
         "today_specials": today_specials,
