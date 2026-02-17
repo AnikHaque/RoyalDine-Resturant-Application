@@ -22,3 +22,27 @@ class RestaurantFeature(models.Model):
     class Meta:
         ordering = ['order']
         verbose_name_plural = "2. Restaurant Features"
+
+
+class AboutSection(models.Model):
+    image = models.ImageField(upload_to='about/')
+    experience_years = models.CharField(max_length=10, default="12Y")
+    legacy_tag = models.CharField(max_length=50, default="The Legacy")
+    title = models.CharField(max_length=200, default="Every Flavor Tells A Royal Story")
+    description = models.TextField()
+    
+    # নিচের ৩টি স্ট্যাটিক নাম্বার/কাউন্টার
+    stat1_count = models.CharField(max_length=20, default="50+")
+    stat1_label = models.CharField(max_length=50, default="Master Recipes")
+    
+    stat2_count = models.CharField(max_length=20, default="20+")
+    stat2_label = models.CharField(max_length=50, default="Expert Chefs")
+    
+    stat3_count = models.CharField(max_length=20, default="100%")
+    stat3_label = models.CharField(max_length=50, default="Satisfaction")
+
+    class Meta:
+        verbose_name_plural = "3. About Section"
+
+    def __str__(self):
+        return self.title
