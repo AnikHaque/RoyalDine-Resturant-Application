@@ -28,7 +28,7 @@ def register_view(request):
             user = form.save(commit=False)
             user.is_staff = False
             user.save()
-            login(request, user)
+            login(request, user,backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Account created successfully')
             return redirect('menu')
     else:
