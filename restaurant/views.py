@@ -9,6 +9,7 @@ from orders.models import OrderItem
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from menu.models import FlashDeal
+from tablebooking.models import HeroSection
 
 def home(request):
     # Categories with available food count
@@ -45,12 +46,13 @@ def home(request):
         end_date__gte=today,
         food__is_available=True
     ).select_related('food')
-
+    hero = HeroSection.objects.filter(is_active=True).last()
     combos = ComboDeal.objects.filter(is_active=True)
     testimonials = Testimonial.objects.all().order_by('-created_at')
     blogs = Blog.objects.filter(is_published=True).order_by('-created_at')[:6]
     flash_deal = FlashDeal.objects.filter(is_active=True).first()
     context = {
+        'hero': hero,
         "categories": categories,
         "top_selling": top_selling,
         "today_specials": today_specials,

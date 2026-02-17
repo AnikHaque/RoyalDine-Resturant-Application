@@ -47,3 +47,20 @@ class Reservation(models.Model):
         if not self.booking_id:
             self.booking_id = str(uuid.uuid4().hex[:8].upper())
         super().save(*args, **kwargs)
+
+
+class HeroSection(models.Model):
+    sub_title = models.CharField(max_length=100, default="Est. 2012 • Fine Dining")
+    main_title_white = models.CharField(max_length=100, default="Crafting")
+    main_title_span = models.CharField(max_length=50, default="Moments")
+    main_title_bottom = models.CharField(max_length=100, default="Beyond Taste")
+    menu_button_text = models.CharField(max_length=50, default="View Our Menu")
+    story_button_text = models.CharField(max_length=50, default="Our Story")
+    background_image = models.ImageField(upload_to='banner/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name_plural = "Hero Section"
+
+    def __str__(self):
+        return f"Banner: {self.main_title_span}"

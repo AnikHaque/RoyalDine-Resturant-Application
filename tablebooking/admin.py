@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import TableCapacity, Reservation
+from .models import  TableCapacity, Reservation
 
 @admin.register(TableCapacity)
 class TableCapacityAdmin(admin.ModelAdmin):
@@ -23,3 +23,10 @@ class ReservationAdmin(admin.ModelAdmin):
     
     # স্ট্যাটাস কালারফুল করার জন্য (ঐচ্ছিক)
     list_editable = ('status',)
+
+
+from .models import HeroSection
+
+@admin.register(HeroSection)
+class HeroSectionAdmin(admin.ModelAdmin):
+    list_display = ('main_title_span', 'is_active')
