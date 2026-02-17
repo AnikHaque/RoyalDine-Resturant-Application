@@ -25,8 +25,3 @@ class ReservationAdmin(admin.ModelAdmin):
     list_editable = ('status',)
 
 
-from .models import HeroSection
-
-@admin.register(HeroSection)
-class HeroSectionAdmin(admin.ModelAdmin):
-    list_display = ('main_title_span', 'is_active')

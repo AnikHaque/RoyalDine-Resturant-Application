@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'payments',
     'tablebooking',
     'blog',
+    'core',
     'django.contrib.sites',
     'allauth',
     'allauth.account',

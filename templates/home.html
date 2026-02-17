@@ -73,7 +73,7 @@
     }
 </style>
 
-<section class="hero" style="{% if hero.background_image %}background-image: url('{{ hero.background_image.url }}');{% endif %}">
+<section class="hero" style="{% if hero.background_image %}background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('{{ hero.background_image.url }}');{% endif %}">
     <div class="container animate__animated animate__fadeIn">
         <p class="text-uppercase letter-spacing-3 mb-3 fw-bold opacity-75">
             {{ hero.sub_title|default:"Est. 2012 • Fine Dining" }}
@@ -90,6 +90,7 @@
             <a href="{% url 'menu' %}" class="btn-posh">
                 {{ hero.menu_button_text|default:"View Our Menu" }}
             </a>
+            
             <a href="#about" class="btn btn-outline-light rounded-pill px-5 py-3 ms-md-3 mt-3 mt-md-0">
                 {{ hero.story_button_text|default:"Our Story" }}
             </a>
@@ -100,34 +101,19 @@
 <section class="py-5 mt-5">
     <div class="container">
         <div class="row g-4 text-center">
+            {% for feature in features %}
             <div class="col-md-3">
                 <div class="feature-box shadow-sm h-100">
-                    <i class="fas fa-leaf fa-3x mb-4"></i>
-                    <h5 class="fw-bold">Pure Organic</h5>
-                    <p class="small opacity-75 mb-0">Directly from our local farms to your plate.</p>
+                    <i class="{{ feature.icon_class }} fa-3x mb-4"></i>
+                    <h5 class="fw-bold">{{ feature.title }}</h5>
+                    <p class="small opacity-75 mb-0">{{ feature.description }}</p>
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="feature-box shadow-sm h-100">
-                    <i class="fas fa-utensils fa-3x mb-4"></i>
-                    <h5 class="fw-bold">Expert Chefs</h5>
-                    <p class="small opacity-75 mb-0">Dishes crafted by world-class culinary artists.</p>
-                </div>
+            {% empty %}
+            <div class="col-12">
+                <p class="text-muted">Welcome to our restaurant. Features coming soon!</p>
             </div>
-            <div class="col-md-3">
-                <div class="feature-box shadow-sm h-100">
-                    <i class="fas fa-truck-fast fa-3x mb-4"></i>
-                    <h5 class="fw-bold">Swift Delivery</h5>
-                    <p class="small opacity-75 mb-0">Heat-preserved delivery within 30 minutes.</p>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="feature-box shadow-sm h-100">
-                    <i class="fas fa-certificate fa-3x mb-4"></i>
-                    <h5 class="fw-bold">Hygiene First</h5>
-                    <p class="small opacity-75 mb-0">Strictly following global safety standards.</p>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
