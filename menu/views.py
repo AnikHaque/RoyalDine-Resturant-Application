@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404,redirect
 
 from menu.utils import get_ai_recommendations
@@ -162,3 +163,32 @@ def menu_home(request):
         'foods': foods,
     }
     return render(request, 'menu/menu_home.html', context)
+
+
+def food_suggestion_api(request):
+    """
+    এই ভিউটিই 'Burger', 'Cheesy' বা 'Spicy' লিখলে খাবার খুঁজে বের করবে।
+    """
+    query = request.GET.get('q', '').strip()
+    
+    if len(query) > 1:
+        # নাম, ক্যাটাগরি অথবা ডেসক্রিপশন—যেকোনো এক জায়গায় মিললেই খাবারটি চলে আসবে
+        suggestions = Food.objects.filter(
+            Q(name__icontains=query) | 
+            Q(category__name__icontains=query) | 
+            Q(description__icontains=query),
+            is_available=True
+        ).distinct()[:8] 
+        
+        data = [
+            {
+                'id': food.id,
+                'name': food.name,
+                'price': str(food.price),
+                'image': food.image.url,
+                'category': food.category.name 
+            } for food in suggestions
+        ]
+        return JsonResponse({'status': 'success', 'data': data})
+    
+    return JsonResponse({'status': 'empty', 'data': []})
