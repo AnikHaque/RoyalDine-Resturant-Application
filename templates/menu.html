@@ -1,317 +1,188 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Our Exquisite Menu | Gemini Restaurant{% endblock %}
+{% block title %}Our Exquisite Menu | RoyalDine Luxury{% endblock %}
 
 {% block content %}
 <style>
     :root {
-        --primary-color: #ff4757;
-        --dark-color: #1e272e;
-        --light-gray: #f8f9fa;
+        --primary: #ff4757;
+        --dark: #1e272e;
         --gold: #ffa502;
+        --light-bg: #f8f9fa;
     }
 
-    /* --- Hero Header Section --- */
+    /* --- Hero Header --- */
     .menu-header {
-        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+        background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
                     url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=1350&q=80');
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-        padding: 120px 0 80px;
-        text-align: center;
-        color: white;
+        background-size: cover; background-position: center; background-attachment: fixed;
+        padding: 140px 0 100px; text-align: center; color: white;
+        clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
     }
 
-    .menu-header h1 {
-        font-family: 'Playfair Display', serif;
-        font-size: 4rem;
-        font-weight: 900;
-        letter-spacing: 2px;
-        margin-bottom: 10px;
+    /* --- Search & Filter Section --- */
+    .menu-controls {
+        margin-top: -60px;
+        position: relative;
+        z-index: 100;
     }
 
-    .menu-header p {
-        font-size: 1.2rem;
-        font-weight: 300;
-        letter-spacing: 5px;
-        text-transform: uppercase;
-        color: var(--gold);
-    }
-
-    /* --- Filter Bar Style --- */
-    .filter-wrapper {
+    .search-bar {
         background: white;
-        margin-top: -40px;
-        padding: 20px;
+        padding: 10px 25px;
         border-radius: 100px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
-        display: inline-block;
-        position: relative;
-        z-index: 10;
+        box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        max-width: 700px;
+        margin: 0 auto 30px;
+        border: 1px solid #eee;
     }
 
-    .filter-btn {
-        border: none;
-        background: transparent;
-        color: var(--dark-color);
-        padding: 12px 30px;
-        font-weight: 700;
-        font-size: 0.95rem;
-        border-radius: 50px;
-        transition: 0.4s;
-        text-transform: uppercase;
+    .search-bar input {
+        border: none; outline: none; width: 100%; padding: 12px; font-weight: 500; font-size: 1.1rem;
     }
 
-    .filter-btn.active {
-        background: var(--primary-color);
-        color: white;
-        box-shadow: 0 8px 20px rgba(255, 71, 87, 0.3);
+    .filter-pills {
+        background: white; padding: 12px; border-radius: 100px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 5px;
     }
 
-    /* --- Food Grid & Card --- */
-    .food-item {
-        transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    .filter-pill {
+        text-decoration: none; color: var(--dark);
+        padding: 10px 25px; font-weight: 700; border-radius: 50px;
+        transition: 0.3s; text-transform: uppercase; font-size: 0.8rem;
     }
 
+    .filter-pill.active { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3); }
+
+    /* --- Food Cards --- */
     .food-card {
-        background: white;
-        border-radius: 30px;
-        overflow: hidden;
-        border: none;
-        height: 100%;
-        transition: 0.4s;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        position: relative;
+        background: white; border-radius: 30px; overflow: hidden; border: none;
+        transition: 0.4s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     }
 
-    .food-card:hover {
-        transform: translateY(-15px);
-        box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+    .food-card:hover { transform: translateY(-12px); box-shadow: 0 25px 50px rgba(0,0,0,0.1); }
+
+    .price-tag {
+        position: absolute; top: 20px; right: 20px;
+        background: var(--primary); color: white; padding: 8px 18px;
+        border-radius: 50px; font-weight: 800; border: 3px solid white; z-index: 10;
     }
 
-    .image-holder {
-        height: 250px;
-        overflow: hidden;
-        position: relative;
+    /* --- Pagination --- */
+    .pagination .page-link {
+        border: none; background: white; color: var(--dark);
+        margin: 0 5px; border-radius: 15px !important; font-weight: 700;
+        width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
     }
 
-    .image-holder img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: 0.6s;
-    }
+    .pagination .page-item.active .page-link { background: var(--primary); color: white; }
 
-    .food-card:hover .image-holder img {
-        transform: scale(1.1) rotate(2deg);
+    .wishlist-btn {
+        background: #f8f9fa; border: 1px solid #eee; padding: 10px;
+        border-radius: 15px; transition: 0.3s; color: #666; text-decoration: none;
     }
-
-    .price-circle {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        background: var(--primary-color);
-        color: white;
-        width: 65px;
-        height: 65px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        font-weight: 800;
-        font-size: 1.1rem;
-        box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
-        border: 4px solid white;
-    }
-
-    .content-box {
-        padding: 30px 25px;
-        text-align: center;
-    }
-
-    .content-box h5 {
-        font-weight: 800;
-        font-size: 1.4rem;
-        color: var(--dark-color);
-        margin-bottom: 12px;
-    }
-
-    .content-box p {
-        color: #777;
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 25px;
-    }
-
-    .add-to-cart-btn {
-        background: var(--dark-color);
-        color: white;
-        padding: 12px 25px;
-        border-radius: 50px;
-        text-decoration: none;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        transition: 0.3s;
-        border: 2px solid var(--dark-color);
-    }
-
-    .add-to-cart-btn:hover {
-        background: transparent;
-        color: var(--dark-color);
-    }
-
-    .hidden { display: none; }
+    .wishlist-btn:hover { color: var(--primary); background: white; border-color: var(--primary); }
 </style>
 
 <header class="menu-header">
     <div class="container">
-        <p>Discovery</p>
-        <h1>OUR SPECIALTIES</h1>
+        <p class="text-uppercase fw-bold text-warning" style="letter-spacing: 5px;">Luxury Dining</p>
+        <h1 class="display-3 fw-bold" style="font-family: 'Playfair Display', serif;">Our Exquisite Menu</h1>
     </div>
 </header>
 
-<div class="container text-center mb-5">
-    <div class="filter-wrapper">
-        <button class="filter-btn active" onclick="filterMenu('all', this)">All</button>
+<div class="container menu-controls text-center">
+    <form method="GET" action="{% url 'menu' %}" class="search-bar">
+        <i class="fa-solid fa-magnifying-glass text-muted fs-5"></i>
+        <input type="text" name="search" placeholder="What are you craving today?" value="{{ request.GET.search|default:'' }}">
+        <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Search</button>
+    </form>
+
+    <div class="filter-pills mb-5">
+        <a href="{% url 'menu' %}" class="filter-pill {% if not request.GET.category %}active{% endif %}">All Dishes</a>
         {% for category in categories %}
-            <button class="filter-btn" onclick="filterMenu('{{ category.name|slugify }}', this)">
+            <a href="?category={{ category.name|slugify }}" 
+               class="filter-pill {% if request.GET.category == category.name|slugify %}active{% endif %}">
                 {{ category.name }}
-            </button>
+            </a>
         {% endfor %}
     </div>
 </div>
 
 <div class="container pb-5">
-    <div class="row g-5" id="menu-grid">
-        {% for category in categories %}
-            {% for food in category.foods.all %}
-                {% if food.is_available %}
-                <div class="col-xl-3 col-lg-3 col-md-6 food-item {{ category.name|slugify }}">
-                    <div class="food-card h-100 d-flex flex-column">
-                        <div class="image-holder">
-                            <img src="{{ food.image.url }}" alt="{{ food.name }}">
-                            <div class="price-circle">৳{{ food.price }}</div>
-                        </div>
+    <div class="row g-4">
+        {% for food in foods %}
+        <div class="col-xl-3 col-lg-4 col-md-6">
+            <div class="food-card h-100 d-flex flex-column position-relative">
+                <div class="price-tag">৳{{ food.price }}</div>
+                
+                <div class="img-wrapper" style="height: 230px; overflow: hidden;">
+                    <img src="{{ food.image.url }}" class="w-100 h-100 object-fit-cover transition" alt="{{ food.name }}">
+                </div>
 
-                        <div class="content-box flex-grow-1 d-flex flex-column">
-                            <h5 class="fw-bold">{{ food.name }}</h5>
-                            <p class="text-muted small mb-3">{{ food.description|truncatechars:80 }}</p>
-                            
-                            <div class="mt-auto">
-                                <a href="{% url 'toggle_wishlist' food.id %}" class="wishlist-text-btn mb-2">
-                                    {% if food.id|stringformat:"s" in request.session.wishlist %}
-                                        <i class="fa-solid fa-heart text-danger"></i> 
-                                        <span class="text-danger">Saved in Wishlist</span>
-                                    {% else %}
-                                        <i class="fa-regular fa-heart"></i> 
-                                        <span>Add to Wishlist</span>
-                                    {% endif %}
-                                </a>
-
-                                <a href="{% url 'add_to_cart' food.id %}" class="add-to-cart-btn">
-                                    <i class="fa-solid fa-basket-shopping"></i> ADD TO CART
-                                </a>
-                            </div>
-                        </div>
+                <div class="p-4 flex-grow-1 d-flex flex-column text-center">
+                    <h5 class="fw-bold mb-2">{{ food.name }}</h5>
+                    <p class="text-muted small flex-grow-1">{{ food.description|truncatechars:70 }}</p>
+                    
+                    <div class="d-flex align-items-center gap-2 mt-3">
+                        <a href="{% url 'toggle_wishlist' food.id %}" class="wishlist-btn flex-shrink-0">
+                            {% if food.id|stringformat:"s" in request.session.wishlist %}
+                                <i class="fa-solid fa-heart text-danger"></i>
+                            {% else %}
+                                <i class="fa-regular fa-heart"></i>
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'add_to_cart' food.id %}" class="btn btn-danger flex-grow-1 rounded-pill fw-bold py-2 shadow-sm">
+                            <i class="fa-solid fa-basket-shopping me-2"></i> ADD TO CART
+                        </a>
                     </div>
                 </div>
-                {% endif %}
-            {% endfor %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <div class="mb-3"><i class="fa-solid fa-utensils fs-1 text-muted opacity-25"></i></div>
+            <h3 class="text-muted">Oops! No delicious items found.</h3>
+            <a href="{% url 'menu' %}" class="btn btn-outline-danger mt-3 rounded-pill">View All Menu</a>
+        </div>
         {% endfor %}
     </div>
+
+    {% if foods.has_other_pages %}
+    <nav class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if foods.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ foods.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </a>
+                </li>
+            {% endif %}
+
+            {% for i in foods.paginator.page_range %}
+                {% if foods.number == i %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                {% elif i > foods.number|add:'-3' and i < foods.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ i }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {% if foods.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ foods.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
 </div>
-
-<style>
-    /* Option 2: Wishlist Text Button Style */
-    .wishlist-text-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        text-decoration: none;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: #666;
-        background: #f8f9fa;
-        padding: 8px 15px;
-        border-radius: 12px;
-        border: 1px solid #eee;
-        transition: all 0.3s ease;
-    }
-
-    .wishlist-text-btn:hover {
-        background: #fff;
-        border-color: #ff4757;
-        color: #ff4757;
-        box-shadow: 0 4px 10px rgba(255, 71, 87, 0.1);
-    }
-
-    /* Add to Cart Button Styling (Ensure it matches your theme) */
-    .add-to-cart-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        background: #ff4757;
-        color: white;
-        text-decoration: none;
-        padding: 12px;
-        border-radius: 12px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        transition: 0.3s;
-        width: 100%;
-    }
-
-    .add-to-cart-btn:hover {
-        background: #e84118;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 71, 87, 0.3);
-        color: white;
-    }
-
-    /* Flexbox adjustment for uniform card height */
-    .food-card {
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        transition: 0.3s;
-    }
-
-    .food-card:hover {
-        transform: translateY(-5px);
-    }
-</style>
-
-<script>
-    function filterMenu(category, button) {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-
-        const items = document.querySelectorAll('.food-item');
-        
-        items.forEach(item => {
-            item.style.opacity = '0';
-            item.style.transform = 'translateY(20px)';
-
-            setTimeout(() => {
-                if (category === 'all' || item.classList.contains(category)) {
-                    item.classList.remove('hidden');
-                    setTimeout(() => {
-                        item.style.opacity = '1';
-                        item.style.transform = 'translateY(0)';
-                    }, 50);
-                } else {
-                    item.classList.add('hidden');
-                }
-            }, 300);
-        });
-    }
-</script>
 {% endblock %}

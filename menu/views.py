@@ -3,10 +3,37 @@ from .models import Category, ComboDeal, FlashDeal, Food, Testimonial
 from django.contrib import messages
 # আগের ইমপোর্টের সাথে শুধু ComboDeal টা কমা দিয়ে যোগ করে দিন
 
-
+from django.core.paginator import Paginator
+from django.db.models import Q
 def menu_view(request):
-    categories = Category.objects.prefetch_related('foods')
-    return render(request, 'menu.html', {'categories': categories})
+    # ১. বেস কোয়েরি সেট (সব এভেইলএবল খাবার)
+    food_list = Food.objects.filter(is_available=True).order_by('-id')
+    categories = Category.objects.all()
+
+    # ২. সার্চ লজিক (নাম অথবা ডেসক্রিপশন দিয়ে সার্চ)
+    search_query = request.GET.get('search')
+    if search_query:
+        food_list = food_list.filter(
+            Q(name__icontains=search_query) | 
+            Q(description__icontains=search_query)
+        )
+
+    # ৩. ক্যাটাগরি ফিল্টার লজিক (URL স্লাগ অনুযায়ী)
+    category_slug = request.GET.get('category')
+    if category_slug:
+        # স্লাগ থেকে স্পেস রিমুভ করে ক্যাটাগরি ফিল্টার
+        food_list = food_list.filter(category__name__iexact=category_slug.replace('-', ' '))
+
+    # ৪. প্যাগিনেশন লজিক (প্রতি পেজে ৮টি খাবার দেখাবে)
+    paginator = Paginator(food_list, 8) 
+    page_number = request.GET.get('page')
+    foods = paginator.get_page(page_number)
+
+    context = {
+        'categories': categories,
+        'foods': foods, # টেমপ্লেট এখন এই 'foods' লুপ করবে
+    }
+    return render(request, 'menu.html', context)
 
 
 def category_items(request, category_id):
