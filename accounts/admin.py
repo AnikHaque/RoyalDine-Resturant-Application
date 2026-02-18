@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AboutStory, AboutFeature, Chef, ContactMessage
+from .models import AboutStory, AboutFeature, Chef, ContactMessage, UserProfile
 
 # ১. স্টোরি ম্যানেজমেন্ট (যাতে অ্যাডমিন প্যানেলে সুন্দর দেখায়)
 @admin.register(AboutStory)
@@ -36,3 +36,7 @@ class ContactAdmin(admin.ModelAdmin):
     # মেসেজগুলো এমনভাবে আসবে যাতে নতুন মেসেজ সবার উপরে থাকে
     ordering = ('-created_at',)
 
+@admin.register(UserProfile)
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'points', 'total_orders', 'membership_level')
+    search_fields = ('user__username',)

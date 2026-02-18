@@ -1,5 +1,6 @@
 from django.db import models
 from django.db import models
+from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField
 
 class AboutStory(models.Model):
@@ -32,3 +33,19 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"Message from {self.name} - {self.subject}"
+
+
+class UserProfile(models.Model):
+    LEVEL_CHOICES = [
+        ('Bronze', 'Bronze'),
+        ('Silver', 'Silver'),
+        ('Gold', 'Gold'),
+        ('Platinum', 'Platinum'),
+    ]
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    points = models.IntegerField(default=0)
+    total_orders = models.PositiveIntegerField(default=0)
+    membership_level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default='Bronze')
+
+    def __str__(self):
+        return self.user.username

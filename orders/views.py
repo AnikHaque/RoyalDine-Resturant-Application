@@ -2,6 +2,8 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
+
+from accounts.models import UserProfile
 from .models import Order, OrderItem
 from menu.models import Food
 from django.contrib.auth.models import User, Group
@@ -232,3 +234,35 @@ def mark_paid(request, order_id):
     # কাজ শেষ করে আবার স্টাফ ড্যাশবোর্ডেই ফেরত পাঠানো
     return redirect('staff_dashboard')
 
+
+# ১. রিওয়ার্ড আপডেট করার মেইন লজিক (Helper)
+def update_user_rewards(user, order_total):
+    profile, created = UserProfile.objects.get_or_create(user=user)
+    earned_points = int(order_total / 100) * 5 # প্রতি ১০০ টাকায় ৫ পয়েন্ট
+    profile.points += earned_points
+    profile.total_orders += 1
+    
+    # লেভেল আপ কন্ডিশন
+    if profile.total_orders >= 20: profile.membership_level = 'Platinum'
+    elif profile.total_orders >= 10: profile.membership_level = 'Gold'
+    elif profile.total_orders >= 5: profile.membership_level = 'Silver'
+    
+    profile.save()
+
+# ২. ডেলিভারি স্ট্যাটাস আপডেট (যেখানে পয়েন্ট কল হবে)
+@login_required
+def update_delivery_status(request, order_id, new_status):
+    order = get_object_or_404(Order, id=order_id)
+    if new_status == 'DELIVERED' and order.status != 'DELIVERED':
+        order.status = 'DELIVERED'
+        order.is_paid = True
+        order.save()
+        # এখানে পয়েন্ট কল হবে
+        update_user_rewards(order.user, order.total_price)
+    return redirect('delivery_dashboard')
+
+# ৩. রিওয়ার্ড পেজ ভিউ
+@login_required
+def rewards_view(request):
+    profile, created = UserProfile.objects.get_or_create(user=request.user)
+    return render(request, 'orders/rewards.html', {'profile': profile})
