@@ -5,16 +5,11 @@ from django.utils import timezone
 from decimal import Decimal
 from django.db.models import Sum
 
-# --- পাইথন কাস্টম ম্যানেজার (গিটহাব পার্সেন্টেজ ও লজিক বাড়াবে) ---
 class OrderManager(models.Manager):
     def total_revenue(self):
-        """শুধুমাত্র পেইড অর্ডার থেকে মোট আয় বের করার লজিক"""
         return self.filter(is_paid=True).aggregate(Sum('total_price'))['total_price__sum'] or Decimal('0.00')
 
 class Order(models.Model):
-    """
-    অর্ডার ম্যানেজমেন্ট মডেল। পেমেন্ট এবং ডেলিভারি স্ট্যাটাস আলাদা রাখা হয়েছে।
-    """
     STATUS_CHOICES = (
         ('PENDING', 'Pending'),
         ('PREPARING', 'Preparing'),
@@ -28,10 +23,7 @@ class Order(models.Model):
     phone = models.CharField(max_length=20, default="0000000000")
     address = models.TextField(default="No Address Provided")
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    
-    # --- নতুন পেমেন্ট ফিল্ড (এটিই আপনার প্রবলেম সলভ করবে) ---
     is_paid = models.BooleanField(default=False) 
-    
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     delivery_man = models.ForeignKey(
         User, 
@@ -43,7 +35,6 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # ম্যানেজার অ্যাসাইন করা
     objects = OrderManager()
 
     class Meta:
@@ -52,8 +43,6 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id} - {self.full_name} ({self.status})"
-
-    # --- পাইথন লজিক সেকশন ---
 
     @property
     def is_delivered(self):
@@ -87,7 +76,6 @@ class OrderItem(models.Model):
 
     @property
     def subtotal(self):
-    # যদি প্রাইস বা কোয়ান্টিটি কোনো কারণে None হয়, তবে যেন ০ রিটার্ন করে
         if self.price is None or self.quantity is None:
             return 0
         return self.price * self.quantity

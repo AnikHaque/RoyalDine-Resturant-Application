@@ -8,7 +8,7 @@ class HeroSection(models.Model):
     main_title_bottom = models.CharField(max_length=100, default="Beyond Taste")
     menu_button_text = models.CharField(max_length=50, default="View Our Menu")
     story_button_text = models.CharField(max_length=50, default="Our Story")
-    background_image = CloudinaryField('image', folder='banner/',blank=True, null=True)
+    background_image = CloudinaryField('background_image', folder='banner/',blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:

@@ -1,11 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 class Blog(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True, blank=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    thumbnail = models.ImageField(upload_to='blogs/thumbnails/')
+    thumbnail = CloudinaryField('thumbnail', folder='blogs/thumbnails/')
     content = models.TextField()
     category = models.CharField(max_length=100, default='Culinary Tips')
     read_time = models.IntegerField(default=5) # মিনিটে

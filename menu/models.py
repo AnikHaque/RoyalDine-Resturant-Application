@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils import timezone
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
+from django.db import models
+from django.utils import timezone
 from cloudinary.models import CloudinaryField
 
 class Category(models.Model):
@@ -26,11 +27,7 @@ class Food(models.Model):
 
     def __str__(self):
         return self.name
-
-
-from django.db import models
-from django.utils import timezone
-
+    
 
 class Offer(models.Model):
     food = models.ForeignKey(
@@ -54,7 +51,6 @@ class Offer(models.Model):
             return f"{self.title} - {self.food.name}"
         return self.title
 
-    # ⭐ Discounted Price Safe
     @property
     def discounted_price(self):
         if not self.food:
@@ -66,7 +62,6 @@ class Offer(models.Model):
         discount = (self.food.price * self.discount_percentage) / 100
         return self.food.price - discount
 
-    # ⭐ Offer Valid Check
     @property
     def is_valid(self):
         today = timezone.now().date()
@@ -75,12 +70,11 @@ class Offer(models.Model):
 
 class Testimonial(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    # আপনার বাকি ফিল্ডগুলো এখানে থাকবে...
     name = models.CharField(max_length=100)
     designation = models.CharField(max_length=100)
     review_text = models.TextField()
     rating = models.IntegerField()
-    image = models.ImageField(upload_to='testimonials/')
+    image = CloudinaryField('image', folder='testimonials/')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -92,7 +86,7 @@ class ComboDeal(models.Model):
     description = models.TextField(blank=True, null=True)
     original_price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.ImageField(upload_to='combos/')
+    image = CloudinaryField('image', folder='combos/')
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -104,8 +98,8 @@ class FlashDeal(models.Model):
     title = models.CharField(max_length=200, default='The "Gemini" Mega Combo')
     description = models.TextField()
     discount_text = models.CharField(max_length=50, default='40% OFF')
-    image = models.ImageField(upload_to='deals/')
-    end_time = models.DateTimeField() # এই সময় পর্যন্ত টাইমার চলবে
+    image = CloudinaryField('image', folder='deals/')
+    end_time = models.DateTimeField() 
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -113,5 +107,4 @@ class FlashDeal(models.Model):
 
     @property
     def time_remaining(self):
-        # সময় বাকি আছে কি না চেক করার জন্য
         return self.end_time > timezone.now()
