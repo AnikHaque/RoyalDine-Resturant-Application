@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 class HeroSection(models.Model):
     sub_title = models.CharField(max_length=100, default="Est. 2012 • Fine Dining")
@@ -7,7 +8,7 @@ class HeroSection(models.Model):
     main_title_bottom = models.CharField(max_length=100, default="Beyond Taste")
     menu_button_text = models.CharField(max_length=50, default="View Our Menu")
     story_button_text = models.CharField(max_length=50, default="Our Story")
-    background_image = models.ImageField(upload_to='banner/', blank=True, null=True)
+    background_image = CloudinaryField('image', folder='banner/',blank=True, null=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -25,7 +26,7 @@ class RestaurantFeature(models.Model):
 
 
 class AboutSection(models.Model):
-    image = models.ImageField(upload_to='about/')
+    image = CloudinaryField('image', folder='about/')
     experience_years = models.CharField(max_length=10, default="12Y")
     legacy_tag = models.CharField(max_length=50, default="The Legacy")
     title = models.CharField(max_length=200, default="Every Flavor Tells A Royal Story")
