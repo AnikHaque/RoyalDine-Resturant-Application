@@ -1,7 +1,5 @@
 {% extends 'accounts/dashboard/base_dashboard.html' %}
-
 {% block title %}Dashboard | Feedback{% endblock %}
-
 {% block sidebar %}
     <a href="{% url 'customer_dashboard' %}" class="{% if request.resolver_match.url_name == 'customer_dashboard' %}active{% endif %}">
         <i class="fa-solid fa-chart-line me-2"></i> Analytics
@@ -22,7 +20,6 @@
         <i class="fa-solid fa-star me-2"></i> My Reviews
     </a>
 {% endblock %}
-
 {% block content %}
 <section style="background: #fdfdfd; min-height: 80vh; display:flex; align-items:center;">
     <div class="container"> <div class="row justify-content-center">
