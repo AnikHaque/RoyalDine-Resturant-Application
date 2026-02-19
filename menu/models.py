@@ -18,11 +18,16 @@ class Food(models.Model):
     name = models.CharField(max_length=150)
     description = models.TextField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    # ImageField এর বদলে CloudinaryField ব্যবহার করুন
     image = CloudinaryField('image', folder='foods/')
     is_available = models.BooleanField(default=True)
     is_today_special = models.BooleanField(default=False)
     stock = models.PositiveIntegerField(default=0)
+    calories = models.IntegerField(default=0)
+    protein = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    carbs = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    fats = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    ai_tags = models.CharField(max_length=255, blank=True, null=True)
+    is_surprise_item = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

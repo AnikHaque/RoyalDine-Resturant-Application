@@ -1,4 +1,5 @@
 
+import random
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -266,3 +267,26 @@ def update_delivery_status(request, order_id, new_status):
 def rewards_view(request):
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     return render(request, 'orders/rewards.html', {'profile': profile})
+
+
+def surprise_box_view(request):
+    if request.method == "POST":
+        # ১. সারপ্রাইজ আইটেমগুলো থেকে র‍্যান্ডমলি একটা সিলেক্ট করা
+        surprise_items = Food.objects.filter(is_surprise_item=True)
+        
+        if not surprise_items.exists():
+            # যদি কোনো আইটেম সিলেক্ট করা না থাকে, তবে সব মেনু থেকে একটা নিন
+            surprise_items = Food.objects.all()
+            
+        winning_food = random.choice(surprise_items)
+        
+        # ২. সরাসরি কার্ডে অ্যাড করা বা সেশন এ রাখা
+        request.session['surprise_item'] = {
+            'id': winning_food.id,
+            'name': winning_food.name,
+            'price': float(winning_food.price),
+            'image': winning_food.image.url
+        }
+        return render(request, 'orders/surprise_reveal.html', {'food': winning_food})
+
+    return render(request, 'orders/surprise_box.html')

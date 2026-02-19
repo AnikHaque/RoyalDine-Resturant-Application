@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container text-center py-5 mt-5">
+    <h1 class="fw-bold mb-4">🎁 The Mystery Box</h1>
+    <p class="text-muted">Pay ৳199 and get a meal worth up to ৳350!</p>
+
+    <div class="mystery-box-container my-5" id="box-section">
+        <img src="https://cdn-icons-png.flaticon.com/512/679/679821.png" id="gift-box" width="200" style="cursor: pointer; transition: 0.5s;">
+        <h3 class="mt-4" id="tap-text">Tap the box to reveal your meal!</h3>
+    </div>
+
+    <form method="POST" id="surprise-form" style="display: none;">
+        {% csrf_token %}
+        <button type="submit" id="submit-btn">Reveal</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('gift-box').onclick = function() {
+        this.style.transform = "scale(1.2) rotate(10deg)";
+        setTimeout(() => {
+            document.getElementById('surprise-form').submit();
+        }, 500);
+    };
+</script>
+
+<style>
+    #gift-box:hover { transform: scale(1.1); filter: drop-shadow(0 0 15px #ffc107); }
+    #gift-box { animation: shake 1.5s infinite; }
+    @keyframes shake {
+        0% { transform: rotate(0); }
+        10% { transform: rotate(5deg); }
+        20% { transform: rotate(-5deg); }
+        30% { transform: rotate(0); }
+    }
+</style>
+{% endblock %}
