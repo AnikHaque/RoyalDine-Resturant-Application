@@ -12,4 +12,5 @@ urlpatterns = [
     path('wishlist/', views.wishlist_page, name='wishlist'),
     path('wishlist/toggle/<int:food_id>/', views.toggle_wishlist, name='toggle_wishlist'),
    path('food/<int:food_id>/', views.food_detail, name='food_detail'),
+   path('mood-menu/', views.mood_menu_view, name='mood_menu'),
 ]

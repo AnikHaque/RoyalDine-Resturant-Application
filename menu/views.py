@@ -146,3 +146,12 @@ def ai_dish_scanner(request):
     
     return render(request, 'menu/scanner.html')
 
+def mood_menu_view(request):
+    selected_mood = request.GET.get('mood', 'happy') # ডিফল্ট মুড Happy
+    food_items = Food.objects.filter(mood_tag=selected_mood)
+    
+    context = {
+        'foods': food_items,
+        'current_mood': selected_mood
+    }
+    return render(request, 'menu/mood_menu.html', context)

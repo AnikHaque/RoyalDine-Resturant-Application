@@ -14,6 +14,13 @@ class Category(models.Model):
 
 
 class Food(models.Model):
+    MOOD_CHOICES = [
+        ('happy', 'Happy (Celebration)'),
+        ('stressed', 'Stressed (Comfort Food)'),
+        ('romantic', 'Romantic (Date Night)'),
+        ('lazy', 'Lazy (Quick Bites)'),
+    ]
+    mood_tag = models.CharField(max_length=20, choices=MOOD_CHOICES, default='happy')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='foods')
     name = models.CharField(max_length=150)
     description = models.TextField()

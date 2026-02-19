@@ -14,11 +14,16 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Food)
 class FoodAdmin(admin.ModelAdmin):
-    # display_image যোগ করা হয়েছে
-    list_display = ('display_image', 'name', 'category', 'price_badge', 'is_available')
-    list_filter = ('category', 'is_available')
+    # 'mood_tag' এবং 'is_surprise_item' লিস্টে দেখার জন্য যোগ করা হয়েছে
+    list_display = ('display_image', 'name', 'category', 'mood_tag', 'price_badge', 'is_surprise_item', 'is_available')
+    
+    # সাইডবারে ফিল্টার করার জন্য 'mood_tag' যোগ করা হয়েছে
+    list_filter = ('category', 'is_available', 'mood_tag', 'is_surprise_item')
+    
     search_fields = ('name',)
-    list_editable = ('is_available',) # লিস্ট থেকেই অ্যাভেলেবিলিটি চেঞ্জ করা যাবে
+    
+    # লিস্ট থেকেই যেন মুড এবং সারপ্রাইজ স্ট্যাটাস চেঞ্জ করা যায়
+    list_editable = ('is_available', 'mood_tag', 'is_surprise_item') 
 
     def display_image(self, obj):
         if obj.image:
@@ -29,8 +34,7 @@ class FoodAdmin(admin.ModelAdmin):
     def price_badge(self, obj):
         return format_html('<b style="color: #2f3542;">৳{}</b>', obj.price)
     price_badge.short_description = "Price"
-
-
+    
 @admin.register(Offer)
 class OfferAdmin(admin.ModelAdmin):
     list_display = (
@@ -93,3 +97,5 @@ class ComboDealAdmin(admin.ModelAdmin):
 @admin.register(FlashDeal)
 class FlashDealAdmin(admin.ModelAdmin):
     list_display = ('title', 'end_time', 'is_active')
+
+
