@@ -146,9 +146,16 @@ def toggle_wishlist(request, food_id):
 def food_detail(request, food_id):
     food = get_object_or_404(Food, id=food_id)
     recommendations = get_ai_recommendations(food)
+    
+    # ব্যাকএন্ড থেকে মেটা ট্যাগ জেনারেট করা হচ্ছে (যা HTML ছাড়াই কাজ করবে)
+    meta = food.get_meta_tags() 
+    
     return render(request, 'menu/food_detail.html', {
         'food': food,
-        'recommendations': recommendations
+        'recommendations': recommendations,
+        'meta_title': meta['title'],
+        'meta_description': meta['description'],
+        'meta_image': meta['image'],
     })
 
  

@@ -45,6 +45,13 @@ class Food(models.Model):
     is_surprise_item = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    # models.py এর Food ক্লাসের ভেতরে এটি যোগ করুন
+    def get_meta_description(self):
+        """অটোমেটিক এসইও মেটা ডেসক্রিপশন জেনারেট করবে"""
+        mood_msg = f"Perfect for your {self.mood_tag} mood!" if self.mood_tag else ""
+        cal_msg = f"Only {self.calories} calories." if self.calories > 0 else ""
+        return f"Order {self.name} at RoyalDine. {self.description[:100]}. {mood_msg} {cal_msg} Authentic taste delivered to your door."
+
     def __str__(self):
         return self.name
 
