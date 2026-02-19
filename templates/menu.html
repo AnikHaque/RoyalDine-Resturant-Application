@@ -1,108 +1,52 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}Our Exquisite Menu | RoyalDine Luxury{% endblock %}
-
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/menu.css' %}">
-<header class="menu-header">
+<header class="menu-header text-center">
     <div class="container">
         <p class="text-uppercase fw-bold text-warning" style="letter-spacing: 5px;">Luxury Dining</p>
         <h1 class="display-3 fw-bold" style="font-family: 'Playfair Display', serif;">Our Exquisite Menu</h1>
     </div>
 </header>
-
-<div class="container menu-controls text-center">
-    <form method="GET" action="{% url 'menu' %}" class="search-bar">
+<div class="container menu-controls text-center mt-4">
+    <form method="GET" action="{% url 'menu' %}" class="search-bar mx-auto">
         <i class="fa-solid fa-magnifying-glass text-muted fs-5"></i>
         <input type="text" name="search" placeholder="What are you craving today?" value="{{ request.GET.search|default:'' }}">
         <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold">Search</button>
     </form>
-
-    <div class="filter-pills mb-5">
+    <div class="filter-pills my-4">
         <a href="{% url 'menu' %}" class="filter-pill {% if not request.GET.category %}active{% endif %}">All Dishes</a>
-        {% for category in categories %}
-            <a href="?category={{ category.name|slugify }}" 
-               class="filter-pill {% if request.GET.category == category.name|slugify %}active{% endif %}">
-                {{ category.name }}
-            </a>
-        {% endfor %}
+        {% for cat in categories %}<a href="?category={{ cat.name|slugify }}" class="filter-pill {% if request.GET.category == cat.name|slugify %}active{% endif %}">{{ cat.name }}</a>{% endfor %}
     </div>
 </div>
-
 <div class="container pb-5">
     <div class="row g-4">
         {% for food in foods %}
         <div class="col-xl-3 col-lg-4 col-md-6">
-            <div class="food-card h-100 d-flex flex-column position-relative">
+            <div class="food-card h-100 d-flex flex-column position-relative shadow-sm">
                 <div class="price-tag">৳{{ food.price }}</div>
-                
-                <div class="img-wrapper" style="height: 230px; overflow: hidden;">
-                    <img src="{{ food.image.url }}" class="w-100 h-100 object-fit-cover transition" alt="{{ food.name }}">
-                </div>
-
+                <div class="img-wrapper" style="height: 230px; overflow: hidden;"><img src="{{ food.image.url }}" class="w-100 h-100 object-fit-cover transition" alt="{{ food.name }}"></div>
                 <div class="p-4 flex-grow-1 d-flex flex-column text-center">
                     <h5 class="fw-bold mb-2">{{ food.name }}</h5>
-                    <a href="{% url 'food_detail' food.id %}" class="btn btn-primary">
-    View Details
-</a>
-                    <p class="text-muted small flex-grow-1">{{ food.description|truncatechars:70 }}</p>
-                    
+                    <p class="text-muted small flex-grow-1">{{ food.description|truncatechars:60 }}</p>
                     <div class="d-flex align-items-center gap-2 mt-3">
-                        <a href="{% url 'toggle_wishlist' food.id %}" class="wishlist-btn flex-shrink-0">
-                            {% if food.id|stringformat:"s" in request.session.wishlist %}
-                                <i class="fa-solid fa-heart text-danger"></i>
-                            {% else %}
-                                <i class="fa-regular fa-heart"></i>
-                            {% endif %}
+                        <a href="{% url 'toggle_wishlist' food.id %}" class="wishlist-btn">
+                            {% if food.id|stringformat:"s" in request.session.wishlist %}<i class="fa-solid fa-heart text-danger"></i>{% else %}<i class="fa-regular fa-heart"></i>{% endif %}
                         </a>
-                        <a href="{% url 'add_to_cart' food.id %}" class="btn btn-danger flex-grow-1 rounded-pill fw-bold py-2 shadow-sm">
-                            <i class="fa-solid fa-basket-shopping me-2"></i> ADD TO CART
-                        </a>
+                        <a href="{% url 'add_to_cart' food.id %}" class="btn btn-danger flex-grow-1 rounded-pill fw-bold py-2"><i class="fa-solid fa-basket-shopping me-2"></i> ADD TO CART</a>
                     </div>
                 </div>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12 text-center py-5">
-            <div class="mb-3"><i class="fa-solid fa-utensils fs-1 text-muted opacity-25"></i></div>
-            <h3 class="text-muted">Oops! No delicious items found.</h3>
-            <a href="{% url 'menu' %}" class="btn btn-outline-danger mt-3 rounded-pill">View All Menu</a>
-        </div>
-        {% endfor %}
+        {% empty %}<div class="col-12 text-center py-5"><h3>Oops! No delicious items found.</h3><a href="{% url 'menu' %}" class="btn btn-outline-danger mt-2 rounded-pill">View All Menu</a></div>{% endfor %}
     </div>
-
     {% if foods.has_other_pages %}
-    <nav class="mt-5">
-        <ul class="pagination justify-content-center">
-            {% if foods.has_previous %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ foods.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </a>
-                </li>
-            {% endif %}
-
-            {% for i in foods.paginator.page_range %}
-                {% if foods.number == i %}
-                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-                {% elif i > foods.number|add:'-3' and i < foods.number|add:'3' %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ i }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ i }}</a>
-                    </li>
-                {% endif %}
-            {% endfor %}
-
-            {% if foods.has_next %}
-                <li class="page-item">
-                    <a class="page-link" href="?page={{ foods.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ 
-                        request.GET.category }}{% endif %}">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% endif %}
+    <nav class="mt-5"><ul class="pagination justify-content-center">
+        {% if foods.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ foods.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}"><i class="fa-solid fa-chevron-left"></i></a></li>{% endif %}
+        {% for i in foods.paginator.page_range %}{% if foods.number == i %}<li class="page-item active"><span class="page-link">{{ i }}</span></li>
+        {% elif i > foods.number|add:'-3' and i < foods.number|add:'3' %}<li class="page-item"><a class="page-link" href="?page={{ i }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}">{{ i }}</a></li>{% endif %}{% endfor %}
+        {% if foods.has_next %}<li class="page-item"><a class="page-link" href="?page={{ foods.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}"><i class="fa-solid fa-chevron-right"></i></a></li>{% endif %}
+    </ul></nav>{% endif %}
 </div>
 {% endblock %}
