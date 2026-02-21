@@ -1,0 +1,60 @@
+ <nav class="navbar navbar-expand-lg fixed-top custom-nav">
+    <div class="container">
+      <a class="navbar-brand" href="/">
+        Royal<span>Dine</span>
+      </a>
+
+      <div class="d-flex align-items-center d-lg-none gap-3">
+        <a href="{% url 'cart' %}" class="text-warning position-relative">
+          <i class="fa-solid fa-bag-shopping fs-4"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+            {{ request.session.cart|length }}
+          </span>
+        </a>
+        <button class="navbar-toggler border-0 text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+          <i class="fa-solid fa-bars-staggered"></i>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="navContent">
+        <ul class="navbar-nav ms-auto align-items-center">
+          <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'menu' %}">Menu</a></li>
+          {% if user.is_authenticated %}
+              {# ১. ডেলিভারি ম্যান চেক (গ্রুপের নাম: Delivery Man) #}
+              {% if user.groups.all.0.name == "Delivery Man" %}
+                  <li class="nav-item">
+                    <a class="nav-link delivery-link" href="{% url 'delivery_dashboard' %}">
+                        <i class="fas fa-truck-ramp-box me-1"></i> Delivery Panel
+                    </a>
+                  </li>
+              {# ২. অ্যাডমিন বা স্টাফ চেক #}
+              {% elif user.is_staff %}
+                  <li class="nav-item"><a class="nav-link" href="{% url 'staff_analytics' %}">Dashboard</a></li>
+              {# ৩. সাধারণ কাস্টমার চেক #}
+              {% else %}
+                  <li class="nav-item"><a class="nav-link" href="{% url 'customer_dashboard' %}">My Account</a></li>
+              {% endif %}
+              <li class="nav-item"><a class="nav-link logout-link" href="{% url 'logout' %}">Logout</a></li>
+          {% else %}
+              <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Login</a></li>
+          {% endif %}
+          <li class="nav-item d-none d-lg-block">
+              <a href="{% url 'wishlist' %}" class="nav-link nav-icon-link">
+                  <i class="fa-regular fa-heart fs-5"></i>
+              </a>
+          </li>
+          <li class="nav-item d-none d-lg-block">
+              <a href="{% url 'cart' %}" class="nav-link nav-icon-link position-relative">
+                  <i class="fa-solid fa-bag-shopping fs-5 text-warning"></i>
+                  <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.55rem; margin-top: 5px;">
+                      {{ request.session.cart|length }}
+                  </span>
+              </a>
+          </li>
+          <li class="nav-item ms-lg-2 mt-3 mt-lg-0">
+            <a class="btn btn-order" href="{% url 'menu' %}">Order Now</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>

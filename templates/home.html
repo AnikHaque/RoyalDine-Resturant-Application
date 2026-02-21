@@ -119,12 +119,7 @@
     <div class="row g-4">{% for blog in blogs %}<div class="col-lg-3 col-md-6"><div class="blog-entry-card"><div class="entry-img-wrap">{% if blog.thumbnail %}<img src="{{ blog.thumbnail.url }}" class="w-100">{% endif %}</div><div class="p-4"><h4 class="playfair"><a href="{% url 'blog_detail' blog.slug %}">{{ blog.title }}</a></h4><p class="small text-muted">{{ blog.content|truncatewords:10 }}</p></div></div></div>{% endfor %}</div>
 </div></section>
 
-<footer class="gorgeous-footer py-5"><div class="container"><div class="row g-5">
-    <div class="col-lg-4"><h2>RoyalDine<span class="text-danger">.</span></h2><p>Experience culinary perfection. Finest flavors to your table.</p></div>
-    <div class="col-lg-2"><h5>Explore</h5><a href="#" class="d-block text-muted">Menu</a><a href="#" class="d-block text-muted">About Us</a></div>
-    <div class="col-lg-2"><h5>Support</h5><a href="#" class="d-block text-muted">Help Center</a><a href="#" class="d-block text-muted">Terms</a></div>
-    <div class="col-lg-4 text-lg-end"><h5>Get In Touch</h5><p>+880 123 456 789<br>hello@geminifood.com</p></div>
-</div><hr class="my-5 opacity-25"><div class="row align-items-center"><div class="col-md-6 text-muted">&copy; 2026 RoyalDine Restaurant.</div><div class="col-md-6 text-end"><i class="fab fa-cc-visa fa-2x mx-2"></i><i class="fab fa-cc-mastercard fa-2x"></i></div></div></div></footer>
+{% include 'includes/footer.html' %}
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
