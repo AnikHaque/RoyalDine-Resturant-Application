@@ -167,19 +167,46 @@ def staff_analytics(request):
         return redirect('home')
     
     last_week = date.today() - timedelta(days=6)
-    revenue_qs = (
-        Order.objects.filter(created_at__date__gte=last_week, is_paid=True)
+    
+    # ৭ দিনের রেভিনিউ এবং অর্ডারের সংখ্যা একসাথে আনা
+    analytics_qs = (
+        Order.objects.filter(created_at__date__gte=last_week)
         .values('created_at__date')
-        .annotate(total=Sum('total_price'))
+        .annotate(
+            total_rev=Sum('total_price'),
+            order_count=Count('id')
+        )
         .order_by('created_at__date')
     )
+
+    # জ্যাসন ডাটা তৈরি (যাতে চার্ট কখনো এরর না দেয়)
+    labels = []
+    revenue_data = []
+    orders_count_data = []
+
+    # গত ৭ দিনের প্রতিটা দিনের জন্য ডাটা সেট করা (কোনো দিন অর্ডার না থাকলে ০ দেখাবে)
+    for i in range(7):
+        curr_date = last_week + timedelta(days=i)
+        labels.append(curr_date.strftime('%d %b'))
+        
+        # ডাটাবেজের রেজাল্ট থেকে ওই দিনের ডাটা খুঁজে বের করা
+        day_data = next((item for item in analytics_qs if item['created_at__date'] == curr_date), None)
+        
+        if day_data:
+            revenue_data.append(float(day_data['total_rev'] or 0))
+            orders_count_data.append(day_data['order_count'] or 0)
+        else:
+            revenue_data.append(0)
+            orders_count_data.append(0)
 
     context = {
         'total_orders': Order.objects.count(),
         'total_paid': Order.objects.filter(is_paid=True).count(),
         'total_pending': Order.objects.filter(is_paid=False).count(),
-        'chart_labels': [d['created_at__date'].strftime('%d %b') for d in revenue_qs],
-        'chart_data': [float(d['total']) for d in revenue_qs],
+        # json.dumps ব্যবহার করলে জাভাস্ক্রিপ্ট এরর হওয়ার সুযোগ থাকে না
+        'chart_labels': json.dumps(labels),
+        'chart_data': json.dumps(revenue_data),
+        'orders_per_day': json.dumps(orders_count_data), 
     }
     return render(request, 'accounts/dashboard/staff_analytics.html', context)
 
