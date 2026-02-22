@@ -1,24 +1,90 @@
+import json
+import random
+from datetime import date, timedelta, datetime
+from decimal import Decimal
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDate
+from django.utils.text import slugify
+from django.utils import timezone
+
 from menu.models import Food, Testimonial
 from .forms import CustomerRegisterForm, LoginForm
 from .decorators import customer_required, staff_required, manager_required
 from orders.models import Order, OrderItem
-from django.db.models import Sum, Count
-from django.db.models.functions import TruncDate
-import json
-from datetime import date, timedelta, datetime
 from blog.models import Blog 
-from django.utils.text import slugify
+from accounts.models import UserProfile # আপনার ইউজার প্রোফাইল মডেল
 
+# -------------------------------------------------------------------
+# ০. Business Intelligence Engine (The Giant Unique Feature)
+# -------------------------------------------------------------------
+class BusinessIntelligence:
+    @staticmethod
+    def get_revenue_report():
+        today = timezone.now().date()
+        week_ago = today - timedelta(days=7)
+        
+        # ১. আজকের রিয়েল-টাইম রেভিনিউ
+        daily_sales = Order.objects.filter(
+            created_at__date=today, 
+            is_paid=True
+        ).aggregate(total=Sum('total_price'))['total'] or 0
 
+        # ২. গত ৭ দিনের গড় (Growth Comparison এর জন্য)
+        weekly_total = Order.objects.filter(
+            created_at__date__range=[week_ago, today], 
+            is_paid=True
+        ).aggregate(total=Sum('total_price'))['total'] or 0
+        weekly_avg = weekly_total / 7
+
+        # ৩. সেলস ভেলোসিটি (শেষ ১ ঘণ্টায় অর্ডার সংখ্যা)
+        one_hour_ago = timezone.now() - timedelta(hours=1)
+        velocity_count = Order.objects.filter(created_at__gte=one_hour_ago).count()
+
+        # ৪. কাস্টমার লয়্যালটি ইনডেক্স
+        total_users = UserProfile.objects.count()
+        repeat_customers = Order.objects.values('user').annotate(cnt=Count('id')).filter(cnt__gt=1).count()
+        loyalty_score = (repeat_customers / total_users * 100) if total_users > 0 else 0
+
+        return {
+            'daily_revenue': daily_sales,
+            'growth_index': daily_sales > weekly_avg,
+            'velocity_per_hour': velocity_count,
+            'loyalty_index': round(loyalty_score, 1)
+        }
+
+# -------------------------------
+# ১. Intelligence Dashboard View
+# -------------------------------
+@login_required
+def admin_intelligence_dashboard(request):
+    if not request.user.is_staff:
+        return redirect('home')
+        
+    report = BusinessIntelligence.get_revenue_report()
+    
+    # টপ সেলিং খাবারগুলো
+    top_items = OrderItem.objects.values('food__name').annotate(
+        sold_qty=Sum('quantity')
+    ).order_by('-sold_qty')[:5]
+
+    # লো স্টক আইটেম সংখ্যা
+    low_stock_count = Food.objects.filter(stock__lte=5, is_available=True).count()
+
+    context = {
+        'report': report,
+        'top_items': top_items,
+        'low_stock_count': low_stock_count,
+    }
+    return render(request, 'accounts/dashboard/admin_intelligence.html', context)
 
 # -------------------------------
 # Authentication Views
 # -------------------------------
-
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('menu')
@@ -28,7 +94,7 @@ def register_view(request):
             user = form.save(commit=False)
             user.is_staff = False
             user.save()
-            login(request, user,backend='django.contrib.auth.backends.ModelBackend')
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             messages.success(request, 'Account created successfully')
             return redirect('menu')
     else:
@@ -57,20 +123,18 @@ def logout_view(request):
 # -------------------------------
 # Customer Dashboard
 # -------------------------------
-from .dashboard_logic import CustomerAnalytics
-
 @login_required
 def customer_dashboard(request):
     if request.user.is_staff:
         return redirect('staff_dashboard')
+    from .dashboard_logic import CustomerAnalytics
     analytics = CustomerAnalytics(user=request.user, order_model=Order, review_model=Testimonial)
     context = analytics.get_all_stats()
     return render(request, 'accounts/dashboard/customer_dashboard.html', context)
 
 # -------------------------------
-# Staff Dashboard & Analytics (Fixing the Errors)
+# Staff Dashboard & Analytics
 # -------------------------------
-
 @login_required
 def staff_dashboard(request):
     if not request.user.is_staff:
@@ -146,12 +210,8 @@ def staff_top_selling(request):
     return render(request, 'accounts/dashboard/staff_top_selling.html', context)
 
 # -------------------------------
-# Reservations & Actions
+# Actions
 # -------------------------------
-
-
-
-
 @login_required
 @staff_required
 def mark_paid(request, order_id):
@@ -165,7 +225,6 @@ def mark_paid(request, order_id):
 # -------------------------------
 # Blog Management
 # -------------------------------
-
 @login_required
 def staff_blog_list(request):
     if not request.user.is_staff:
@@ -204,7 +263,3 @@ def staff_delete_blog(request, blog_id):
     if request.method == "POST":
         blog.delete()
     return redirect('staff_blog_list')
-
-
-
-
