@@ -4,6 +4,7 @@
 {% block content %}
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{% static 'css/about.css' %}">
+<link rel="stylesheet" href="{% static 'css/footer.css' %}">
 <header class="page-header text-center py-5"><div class="container">
     <p class="m-0">A Journey of Taste</p><h1 class="display-3 fw-bold playfair">Our Story</h1>
 </div></header>
@@ -40,4 +41,5 @@
     <h2 class="display-5 fw-bold mb-3">Ready to experience the taste?</h2><p class="mb-4 opacity-75">Book a table or order online today and get 10% discount!</p>
     <div class="d-flex justify-content-center gap-2"><a href="{% url 'menu' %}" class="btn btn-danger btn-lg px-4 rounded-pill">Order Online</a><a href="#" class="btn btn-outline-light btn-lg px-4 rounded-pill">Contact Us</a></div>
 </div></section>
+{% include 'includes/footer.html' %}
 {% endblock %}

@@ -1,0 +1,57 @@
+/* ২. গর্জিয়াস ফুটার স্টাইল */
+    .gorgeous-footer {
+        background: #111;
+        padding-top: 120px; /* এলিট বক্সের জন্য উপরে জায়গা রাখা */
+        padding-bottom: 40px;
+        color: #eee;
+    }
+
+    .footer-title {
+        font-family: 'Playfair Display', serif;
+        color: white;
+        font-weight: 700;
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+    .footer-title::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 40px;
+        height: 2px;
+        background: #ff4757;
+    }
+
+    .footer-link {
+        color: #bbb;
+        text-decoration: none;
+        display: block;
+        margin-bottom: 12px;
+        transition: 0.3s;
+    }
+
+    .footer-link:hover {
+        color: #ff4757;
+        transform: translateX(5px);
+    }
+
+    .social-btn {
+        width: 40px;
+        height: 40px;
+        background: rgba(255,255,255,0.05);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: white;
+        margin-right: 10px;
+        transition: 0.3s;
+    }
+
+    .social-btn:hover {
+        background: #ff4757;
+        color: white;
+        transform: translateY(-5px);
+    }

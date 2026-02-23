@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block content %}
-
+<link rel="stylesheet" href="{% static 'css/footer.css' %}">
 <section class="blog-detail-wrapper py-5 mt-5 bg-light">
     <div class="container py-4">
         <div class="row g-5">
@@ -99,4 +100,5 @@
     .lh-base { line-height: 1.8 !important; }
     .bg-light { background-color: #f8f9fa !important; }
 </style>
+{% include 'includes/footer.html' %}
 {% endblock %}

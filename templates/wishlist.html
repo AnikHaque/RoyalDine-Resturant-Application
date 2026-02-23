@@ -2,6 +2,7 @@
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/wishlist.css' %}">
+<link rel="stylesheet" href="{% static 'css/footer.css' %}">
 <div class="wishlist-section"><div class="container py-5">
     <div class="wishlist-header text-center mb-5 mt-4">
         <h1 class="mb-2">My Favorites <span class="text-danger">❤️</span></h1>
@@ -30,4 +31,5 @@
         <a href="{% url 'menu' %}" class="btn btn-danger rounded-pill px-4">Discover Food</a>
     </div>{% endif %}
 </div></div>
+{% include 'includes/footer.html' %}
 {% endblock %}

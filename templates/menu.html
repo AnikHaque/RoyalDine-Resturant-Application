@@ -4,6 +4,7 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+<link rel="stylesheet" href="{% static 'css/footer.css' %}">
 
 <header class="menu-header text-center">
     <div class="container">
@@ -58,4 +59,5 @@
         {% if foods.has_next %}<li class="page-item"><a class="page-link shadow-sm rounded-circle mx-1" href="?page={{ foods.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}"><i class="fa-solid fa-chevron-right"></i></a></li>{% endif %}
     </ul></nav>{% endif %}
 </div>
+{% include 'includes/footer.html' %}
 {% endblock %}
