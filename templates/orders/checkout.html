@@ -1,81 +1,45 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Finalize Order | Gourmet Checkout{% endblock %}
-
+{% block title %}Checkout | Gourmet{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-<div class="checkout-header py-5 bg-dark text-white text-center">
-    <div class="container">
-        <h2 class="fw-bold"><i class="fas fa-lock me-2 text-warning"></i> সুরক্ষিত চেকআউট</h2>
-        <p class="opacity-75 mb-0">আপনার শেষ ধাপটি সম্পন্ন করুন</p>
-    </div>
+<div class="checkout-header py-4 bg-dark text-white text-center">
+    <div class="container"><h3 class="fw-bold m-0"><i class="fas fa-lock me-2 text-warning"></i> সুরক্ষিত চেকআউট</h3></div>
 </div>
-
-<section class="py-5 bg-light">
-    <div class="container">
-        <form method="post" class="row g-4">
-            {% csrf_token %}
-            <div class="col-lg-7">
-                <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
-                    <h4 class="fw-bold mb-4"><i class="fas fa-map-marker-alt text-danger me-2"></i> ডেলিভারি ঠিকানা</h4>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="small fw-bold">আপনার নাম</label>
-                            <input type="text" name="full_name" class="form-control" value="{{ request.user.get_full_name }}" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="small fw-bold">ফোন নম্বর</label>
-                            <input type="text" name="phone" class="form-control" placeholder="017xxxxxxxx" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="small fw-bold">পুরো ঠিকানা</label>
-                            <textarea name="address" class="form-control" rows="3" placeholder="বাসা, রোড, এলাকা..." required></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card border-0 shadow-sm rounded-4 p-4">
-                    <h4 class="fw-bold mb-4"><i class="fas fa-credit-card text-primary me-2"></i> পেমেন্ট মেথড</h4>
-                    <div class="d-flex gap-3">
-                        <div class="form-check p-3 border rounded-3 w-50">
-                            <input class="form-check-input ms-0 me-2" type="radio" name="payment_method" id="cod" value="cod" checked>
-                            <label class="form-check-label fw-bold" for="cod">ক্যাশ অন ডেলিভারি</label>
-                        </div>
-                        <div class="form-check p-3 border rounded-3 w-50">
-                            <input class="form-check-input ms-0 me-2" type="radio" name="payment_method" id="online" value="online">
-                            <label class="form-check-label fw-bold" for="online">অনলাইন পেমেন্ট</label>
-                        </div>
-                    </div>
+<section class="py-5 bg-light"><div class="container">
+    <form method="post" class="row g-4">{% csrf_token %}
+        <div class="col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4 mb-3">
+                <h5 class="fw-bold mb-3"><i class="fas fa-map-marker-alt text-danger me-2"></i> ডেলিভারি ঠিকানা</h5>
+                <div class="row g-3">
+                    <div class="col-md-6"><label class="small fw-bold">নাম</label><input type="text" name="full_name" class="form-control" value="{{ request.user.get_full_name }}" required></div>
+                    <div class="col-md-6"><label class="small fw-bold">ফোন</label><input type="text" name="phone" class="form-control" placeholder="017xxxxxxxx" required></div>
+                    <div class="col-12"><label class="small fw-bold">পুরো ঠিকানা</label><textarea name="address" class="form-control" rows="2" placeholder="বাসা, রোড, এলাকা..." required></textarea></div>
                 </div>
             </div>
-
-            <div class="col-lg-5">
-                <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 100px;">
-                    <h4 class="fw-bold mb-4">অর্ডার রিভিউ</h4>
-                    <div class="mb-4">
-                        {% for item in cart.values %}
-                        <div class="d-flex justify-content-between mb-2 small">
-                            <span>{{ item.name }} <strong>× {{ item.qty }}</strong></span>
-                            <span class="fw-bold">৳ {{ item.price }}</span>
-                        </div>
-                        {% endfor %}
-                    </div>
-                    <hr>
-                    <div class="d-flex justify-content-between mb-2"><span>সাবটোটাল</span><span>৳ {{ total }}</span></div>
-                    <div class="d-flex justify-content-between mb-2"><span>ডেলিভারি</span><span class="text-success">ফ্রি</span></div>
-                    <div class="d-flex justify-content-between align-items-center my-3">
-                        <span class="h5 fw-bold mb-0">মোট পরিমাণ</span>
-                        <span class="h4 fw-bold text-dark mb-0">৳ {{ total }}</span>
-                    </div>
-                    <button type="submit" class="btn btn-dark w-100 py-3 rounded-pill fw-bold">
-                        অর্ডার সম্পন্ন করুন <i class="fas fa-check-circle ms-2"></i>
-                    </button>
-                    <p class="text-center text-muted small mt-3 mb-0"><i class="fas fa-shield-alt me-1"></i> ডাটা নিরাপদ</p>
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+                <h5 class="fw-bold mb-3"><i class="fas fa-credit-card text-primary me-2"></i> পেমেন্ট মেথড</h5>
+                <div class="d-flex gap-2">
+                    <div class="border rounded-3 p-2 w-50 small"><input type="radio" name="payment_method" id="cod" value="cod" checked> <label for="cod" class="fw-bold">ক্যাশ অন ডেলিভারি</label></div>
+                    <div class="border rounded-3 p-2 w-50 small"><input type="radio" name="payment_method" id="online" value="online"> <label for="online" class="fw-bold">অনলাইন পেমেন্ট</label></div>
                 </div>
             </div>
-        </form>
-    </div>
-</section>
+        </div>
+        <div class="col-lg-5">
+            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top:90px;">
+                <h5 class="fw-bold mb-3">অর্ডার রিভিউ</h5>
+                <div class="mb-3 overflow-auto" style="max-height: 200px;">
+                    {% for item in cart.values %}
+                    <div class="d-flex justify-content-between mb-1 small"><span>{{ item.name }} <strong>×{{ item.qty }}</strong></span><span class="fw-bold">৳{{ item.price }}</span></div>
+                    {% endfor %}
+                </div><hr>
+                <div class="d-flex justify-content-between mb-1 small"><span>সাবটোটাল</span><span>৳ {{ total }}</span></div>
+                <div class="d-flex justify-content-between mb-1 small"><span>ডেলিভারি</span><span class="text-success">ফ্রি</span></div>
+                <div class="d-flex justify-content-between align-items-center my-2"><span class="fw-bold">মোট পরিমাণ</span><span class="h4 fw-bold mb-0">৳ {{ total }}</span></div>
+                <button type="submit" class="btn btn-dark w-100 py-3 rounded-pill fw-bold mt-2">অর্ডার সম্পন্ন করুন</button>
+                <p class="text-center text-muted mt-3 mb-0" style="font-size:10px;"><i class="fas fa-shield-alt"></i> ১০০% নিরাপদ ট্রানজাকশন</p>
+            </div>
+        </div>
+    </form>
+</div></section>
 {% endblock %}
