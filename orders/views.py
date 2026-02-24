@@ -241,3 +241,33 @@ def surprise_box_view(request):
         else:
             messages.error(request, "দুঃখিত, বর্তমানে কোনো সারপ্রাইজ আইটেম নেই।")
     return render(request, 'orders/surprise_box.html', {'winning_food': winning_food})
+
+def reorder_instant(request, order_id):
+    """পুরো একটি অর্ডারকে এক ক্লিকে কার্টে কপি করার লজিক"""
+    # ১. আগের অর্ডারটি খুঁজে বের করা
+    old_order = get_object_or_404(Order, id=order_id, user=request.user)
+    
+    # ২. বর্তমান সেশন থেকে কার্ট আনা
+    cart = request.session.get('cart', {})
+    
+    # ৩. আগের অর্ডারের সব আইটেম লুপ করে কার্টে ঢুকানো
+    # ধরে নিচ্ছি আপনার অর্ডারে 'items' নামে related_name আছে
+    for item in old_order.items.all():
+        food_id = str(item.food.id)
+        if food_id in cart:
+            cart[food_id]['qty'] += item.quantity
+        else:
+            cart[food_id] = {
+                'product_id': item.food.id,
+                'name': item.food.name,
+                'price': float(item.food.price),
+                'qty': item.quantity,
+                'image': item.food.image.url if item.food.image else ''
+            }
+    
+    # ৪. সেশন সেভ করা
+    request.session['cart'] = cart
+    request.session.modified = True
+    
+    messages.success(request, f"Order #{old_order.id} items added to cart!")
+    return redirect('cart') # সরাসরি কার্ট পেজে নিয়ে যাবে

@@ -46,7 +46,7 @@
     <div class="row g-4">
         {% for item in top_selling %}<div class="col-lg-3 col-md-6"><div class="premium-card text-center shadow-sm p-3 rounded-4 bg-white h-100 transition-hover">
             <div class="img-wrapper mb-3" style="height: 200px; overflow: hidden; border-radius: 15px;"><img src="{% if item.image %}{{ item.image.url }}{% else %}https://via.placeholder.com/300x200{% endif %}" class="img-fluid w-100 h-100 object-fit-cover"></div>
-            <div class="p-2"><h6 class="fw-bold mb-2">{{ item.name }}</h6><p class="text-primary fw-bold fs-5 mb-3">৳ {{ item.price }}</p><a href="{% url 'add_to_cart' item.id %}" class="btn btn-dark w-100 rounded-pill py-2">Add To Cart</a></div>
+            <div class="p-2"><h6 class="fw-bold mb-2">{{ item.name }}</h6><p class="text-primary fw-bold fs-5 mb-3">৳ {{ item.price }}</p><a href="{% url 'add_to_cart' item.id %}" class="btn btn-danger w-100 rounded-pill py-2">Add To Cart</a></div>
         </div></div>{% endfor %}
     </div>
 </div></section>
@@ -60,7 +60,7 @@
 
 <section class="py-5"><div class="container"><div class="section-head"><h2 class="playfair">Exclusive Offers</h2></div><div class="row g-4">
     {% for offer in offers %}<div class="col-lg-3 col-md-6"><div class="premium-card text-center"><span class="badge-offer">{{ offer.discount_percentage }}% OFF</span><div class="img-wrapper">{% if offer.food.image %}<img src="{{ offer.food.image.url }}">{% endif %}</div>
-        <div class="p-4"><h6 class="fw-bold mb-2">{{ offer.title }}</h6><p class="text-danger fw-bold fs-5 mb-3">৳ {{ offer.discounted_price }}</p><a href="{% url 'add_to_cart' offer.food.id %}" class="btn btn-primary w-100 rounded-pill py-2">Claim Offer</a></div>
+        <div class="p-4"><h6 class="fw-bold mb-2">{{ offer.title }}</h6><p class="text-danger fw-bold fs-5 mb-3">৳ {{ offer.discounted_price }}</p><a href="{% url 'add_to_cart' offer.food.id %}" class="btn btn-dark w-100 rounded-pill py-2">Claim Offer</a></div>
     </div></div>{% endfor %}
 </div></div></section>
 

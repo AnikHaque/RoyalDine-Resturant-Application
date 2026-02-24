@@ -64,7 +64,9 @@
     }
 
     
-
+.btn-masterpiece {
+   color: #d4af37;
+}
      :root {
         --primary: #ff4757; /* Your Website Red */
         --deep-dark: #0f141e;
