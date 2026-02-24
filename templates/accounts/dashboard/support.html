@@ -9,6 +9,9 @@
     <a href="{{ orders }}" class="{% if request.path == orders %}active{% endif %}"><i class="fa-solid fa-shopping-bag"></i> My Orders</a>
     <a href="{{ book }}" class="{% if request.path == book %}active{% endif %}"><i class="fa-solid fa-calendar-plus"></i> Book Table</a>
     <a href="{{ res_list }}" class="{% if request.path == res_list %}active{% endif %}"><i class="fa-solid fa-list-ul"></i> My Reservations</a>
+    <a href="{% url 'my_payments' %}" class="{% if request.path == '/accounts/dashboard/payments/' %}active{% endif %}">
+    <i class="fa-solid fa-credit-card"></i> My Payments
+</a>
     <a href="{{ add_rev }}" class="{% if request.path == add_rev %}active{% endif %}"><i class="fa-solid fa-pen-fancy"></i> Create Review</a>
     <a href="{{ my_testi }}" class="{% if request.path == my_testi %}active{% endif %}"><i class="fa-solid fa-star"></i> My Reviews</a>
     <a href="{% url 'profile_settings' %}" class="{% if request.path == '/profile/' %}active{% endif %}">

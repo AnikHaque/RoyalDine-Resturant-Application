@@ -203,6 +203,13 @@ def payment_page(request, order_id):
     return redirect('create_payment', order_id=order.id)
 
 @login_required
+def my_payments(request):
+    # আপনার মডেল অনুযায়ী is_paid ফিল্ডটি ব্যবহার করা হয়েছে
+    payments = Order.objects.filter(user=request.user, is_paid=True).order_by('-created_at')
+    
+    return render(request, 'accounts/dashboard/my_payments.html', {'payments': payments})
+
+@login_required
 def delete_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     if request.method == 'POST':

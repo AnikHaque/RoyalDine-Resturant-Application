@@ -21,4 +21,5 @@ urlpatterns = [
     path('update-status/<int:order_id>/<str:new_status>/', views.update_delivery_status, name='update_delivery_status'),
     path('surprise-box/', views.surprise_box_view, name='surprise_box'),
     path('reorder/<int:order_id>/', views.reorder_instant, name='reorder_instant'),
+    path('dashboard/payments/', views.my_payments, name='my_payments'),
 ]
