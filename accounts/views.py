@@ -129,6 +129,47 @@ def customer_dashboard(request):
     from .dashboard_logic import CustomerAnalytics
     analytics = CustomerAnalytics(user=request.user, order_model=Order, review_model=Testimonial)
     context = analytics.get_all_stats()
+    
+    # ২. লয়্যালটি লজিক (সরাসরি ভিউতে)
+    completed_order_count = Order.objects.filter(user=request.user, status__iexact='Completed').count()
+    
+    # টায়ার কনফিগারেশন
+    TIERS = {
+        'BRONZE': {'min_orders': 0, 'discount': 0, 'badge': '🥉', 'next': 5},
+        'SILVER': {'min_orders': 5, 'discount': 5, 'badge': '🥈', 'next': 15},
+        'GOLD': {'min_orders': 15, 'discount': 10, 'badge': '🥇', 'next': None},
+    }
+
+    # বর্তমান টায়ার বের করা
+    if completed_order_count >= TIERS['GOLD']['min_orders']:
+        tier_key = 'GOLD'
+    elif completed_order_count >= TIERS['SILVER']['min_orders']:
+        tier_key = 'SILVER'
+    else:
+        tier_key = 'BRONZE'
+
+    current_tier = TIERS[tier_key]
+    
+    # পরবর্তী লেভেলের প্রগ্রেস ক্যালকুলেশন
+    next_goal = current_tier['next']
+    if next_goal:
+        remaining = next_goal - completed_order_count
+        # প্রগ্রেস বার এর জন্য পার্সেন্টেজ (ম্যাক্সিমাম ১০০%)
+        progress = (completed_order_count / next_goal) * 100
+    else:
+        remaining = 0
+        progress = 100
+
+    # ৩. কন্টেক্সটে আলাদা করে লয়্যালটি ডাটা পুশ করা
+    context['loyalty'] = {
+        'tier_name': tier_key,
+        'tier_badge': current_tier['badge'],
+        'discount': current_tier['discount'],
+        'completed_count': completed_order_count,
+        'remaining': remaining,
+        'progress_percent': round(progress, 1),
+        'is_gold': tier_key == 'GOLD'
+    }
     return render(request, 'accounts/dashboard/customer_dashboard.html', context)
 
 # -------------------------------
