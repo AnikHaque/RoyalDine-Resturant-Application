@@ -38,7 +38,7 @@ def home(request):
         top_selling = Food.objects.filter(is_available=True)[:8]
 
     # Today Specials
-    today_specials = Food.objects.filter(is_today_special=True, is_available=True)[:5]
+    today_specials = Food.objects.filter(is_today_special=True, is_available=True)[:8]
 
     # Active Offers
     today = timezone.now().date()
