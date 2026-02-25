@@ -2,7 +2,6 @@ import qrcode
 import base64
 from io import BytesIO
 from datetime import date as dt_date
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -78,3 +77,35 @@ def check_availability(request):
     capacity = TableCapacity.objects.filter(date=date, shift=shift).first()
     available = capacity.available_tables if capacity else 15
     return JsonResponse({'available': available})
+
+@login_required
+def all_reservations(request):
+    if not request.user.is_staff:
+        return redirect('staff_dashboard')
+    
+    # Shob reservation dekhabe, latest gulo upore
+    reservations = Reservation.objects.all().order_by('-date', '-created_at')
+    
+    context = {
+        'reservations': reservations,
+    }
+    return render(request, 'accounts/dashboard/staff_reservations.html', context)
+
+@login_required
+def delete_reservation(request, booking_id):
+    if not request.user.is_staff:
+        return redirect('staff_dashboard')
+        
+    reservation = get_object_or_404(Reservation, booking_id=booking_id)
+    
+    with transaction.atomic():
+        # Capacity restore kora (ekti table faka kora)
+        capacity = TableCapacity.objects.filter(date=reservation.date, shift=reservation.shift).first()
+        if capacity and capacity.booked_tables > 0:
+            capacity.booked_tables -= 1
+            capacity.save()
+        
+        reservation.delete()
+        messages.success(request, f"Reservation {booking_id} has been cancelled and table restored.")
+        
+    return redirect('all_reservations')

@@ -1,5 +1,5 @@
 {% extends "accounts/dashboard/base_dashboard.html" %}
-
+{% load static %}
 {% block sidebar %}
     {% url 'staff_analytics' as a %}{% url 'staff_inventory' as i %}{% url 'staff_top_selling' as t %}{% url 'staff_dashboard' as d %}{% url 'staff_blog_list' as bl %}{% url 'staff_create_blog' as bc %}
     
@@ -11,6 +11,10 @@
     </a>
     <a href="{{ t }}" class="nav-link-custom {% if request.path == t %}active{% endif %}" style="--clr: #FFA502;">
         <i class="fa-solid fa-fire me-2 fa-beat-low"></i> Top Selling
+    </a>
+      {% url 'all_reservations' as res_list %}
+    <a href="{{ res_list }}" class="nav-link-custom {% if request.path == res_list %}active{% endif %}" style="--clr: #8e44ad;">
+        <i class="fa-solid fa-calendar-check me-2"></i> All Reservations
     </a>
 
     <hr class="opacity-10 mx-3">

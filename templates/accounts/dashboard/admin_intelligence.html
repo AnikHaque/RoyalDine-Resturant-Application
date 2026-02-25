@@ -12,6 +12,10 @@
     <a href="{{ t }}" class="nav-link-custom {% if request.path == t %}active{% endif %}" style="--clr: #FFA502;">
         <i class="fa-solid fa-fire me-2 fa-beat-low"></i> Top Selling
     </a>
+      {% url 'all_reservations' as res_list %}
+    <a href="{{ res_list }}" class="nav-link-custom {% if request.path == res_list %}active{% endif %}" style="--clr: #8e44ad;">
+        <i class="fa-solid fa-calendar-check me-2"></i> All Reservations
+    </a>
 
     <hr class="opacity-10 mx-3">
     

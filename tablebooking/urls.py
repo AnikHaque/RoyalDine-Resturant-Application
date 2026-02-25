@@ -15,4 +15,6 @@ urlpatterns = [
     
     # এভেইল্যাবিলিটি চেক (AJAX এর জন্য)
     path('check-availability/', views.check_availability, name='check_availability'),
+    path('staff/reservations/', views.all_reservations, name='all_reservations'),
+    path('staff/reservations/delete/<str:booking_id>/', views.delete_reservation, name='delete_reservation'),
 ]
