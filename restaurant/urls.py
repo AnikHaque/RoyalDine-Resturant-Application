@@ -23,6 +23,7 @@ urlpatterns = [
     path('booking/', include('tablebooking.urls')),
     path('chat/', include('chat.urls')),
     path('send-custom-mail/', views.custom_email_sender, name='custom_mail'),
+    path('healthy-bites/', views.all_healthy_bites, name='all_healthy_bites'),
 ]
 
 # 👇 THIS MUST BE AT THE BOTTOM

@@ -61,6 +61,13 @@ def home(request):
         active=True, 
         valid_to__gte=timezone.now()
     ).first()
+
+    healthy_items = Food.objects.filter(
+        calories__lte=300, 
+        calories__gt=0, 
+        is_available=True
+    ).order_by('-created_at')[:8]
+
     context = {
        'hero': hero,
         'features': features,
@@ -73,10 +80,16 @@ def home(request):
         'testimonials': testimonials,
         'blogs': blogs,
         'combos': combos,
-        'flash_deal':flash_deal
+        'flash_deal':flash_deal,
+        'healthy_items': healthy_items,
     }
 
     return render(request, "home.html", context)
+
+def all_healthy_bites(request):
+    # সব হেলদি খাবার দেখার জন্য
+    all_healthy = Food.objects.filter(calories__lte=300, calories__gt=0, is_available=True)
+    return render(request, 'healthy_bites_all.html', {'items': all_healthy})
 
 @login_required
 def add_review(request):
