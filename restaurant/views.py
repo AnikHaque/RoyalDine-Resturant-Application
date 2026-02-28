@@ -14,6 +14,29 @@ from menu.models import FlashDeal
 
 
 def home(request):
+    # --- স্মার্ট মুড ট্র্যাকিং লজিক (AI Recommendation) ---
+    recommended_mood = 'happy'  # ডিফল্ট মুড
+    if request.user.is_authenticated:
+        # ইউজারের শেষ ৫টি অর্ডারের মুড চেক করা
+        last_moods = OrderItem.objects.filter(
+            order__user=request.user
+        ).values_list('food__mood_tag', flat=True).order_by('-id')[:5]
+        
+        if last_moods:
+            # সবচেয়ে বেশি যে মুডটি অর্ডার হয়েছে সেটি বের করা
+            recommended_mood = max(set(last_moods), key=list(last_moods).count)
+
+    # --- স্মার্ট ক্যাটালগ ফিল্টারিং ---
+    # ১. ইউজারের মুড অনুযায়ী অথবা আজকের স্পেশাল খাবারগুলো (স্টক থাকা সাপেক্ষে)
+    smart_featured = Food.objects.filter(
+        is_available=True,
+        stock__gt=0
+    ).filter(
+        Q(mood_tag=recommended_mood) | Q(is_today_special=True)
+    ).distinct().order_by('-stock')[:8]
+
+    # ২. ওভারস্টক ক্লিয়ারেন্স (যাদের স্টক ৫০ এর বেশি, তাদের অটো প্রোমোশনে পাঠানো)
+    overstock_deals = Food.objects.filter(stock__gt=50, is_available=True)[:4]
     # Categories with available food count
     categories = Category.objects.annotate(
         item_count=Count('foods', filter=Q(foods__is_available=True))
@@ -82,6 +105,9 @@ def home(request):
         'combos': combos,
         'flash_deal':flash_deal,
         'healthy_items': healthy_items,
+        'smart_featured': smart_featured,
+        'overstock_deals': overstock_deals,
+        'user_mood': recommended_mood.capitalize() if recommended_mood else "Happy",
     }
 
     return render(request, "home.html", context)
