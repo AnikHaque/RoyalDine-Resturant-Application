@@ -1,64 +1,37 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link rel="stylesheet" href="{% static 'css/home.css' %}">
 <style>
-    :root {
-        --gold: #C5A059;
-        --dark: #0f0f0f;
-        --light-gold: #e3c18d;
-        --green: #27ae60;
-        --pink: #ff4757;
-    }
+    :root { --gold: #C5A059; --dark: #0f0f0f; --light-gold: #e3c18d; --green: #27ae60; --pink: #ff4757; }
     body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fcfcfc; color: #333; overflow-x: hidden; }
     .playfair { font-family: 'Playfair Display', serif; }
-    
-    /* Global Title Style */
     .section-title { text-align: center; margin-bottom: 60px; }
     .section-title h2 { font-family: 'Playfair Display', serif; font-weight: 900; font-size: 3.5rem; position: relative; display: inline-block; }
     .section-title h2 span { color: var(--gold); font-style: italic; }
     .section-title h2::after { content: ''; position: absolute; width: 50%; height: 4px; background: var(--gold); bottom: -10px; left: 25%; border-radius: 10px; }
-
-    /* 1. Hero Section - Cinematic */
-    
-    /* 2. Feature Section - Floating Glass */
     .feature-card { background: white; border: none; border-radius: 30px; padding: 40px; transition: 0.4s; box-shadow: 0 10px 40px rgba(0,0,0,0.05); }
     .feature-card:hover { transform: translateY(-15px); background: var(--dark); color: white; }
     .feature-icon { font-size: 3rem; color: var(--gold); margin-bottom: 20px; }
-
-    /* 3. Thali & Thali Cards (Wide) */
     .thali-card { display: flex; background: var(--dark); color: white; border-radius: 40px; overflow: hidden; height: 350px; border: 1px solid rgba(255,255,255,0.1); }
     .thali-img { width: 50%; object-fit: cover; }
     .thali-info { width: 50%; padding: 40px; display: flex; flex-direction: column; justify-content: center; }
-
-    /* 4. Healthy Bites (Circular Aesthetic) */
     .healthy-card { background: white; border-radius: 150px 150px 40px 40px; padding: 25px; transition: 0.5s; border: 1px solid #eee; text-align: center; }
     .healthy-img { width: 100%; height: 250px; border-radius: 130px; object-fit: cover; margin-bottom: 20px; border: 8px solid #fff; box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
     .healthy-card:hover { border-color: var(--green); transform: scale(1.03); }
-
-    /* 5. Masterpiece (Premium Glass) */
     .mp-card { position: relative; border-radius: 30px; overflow: hidden; background: white; padding: 15px; transition: 0.5s; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .mp-card:hover { transform: translateY(-15px); box-shadow: 0 30px 60px rgba(0,0,0,0.15); }
     .mp-img-wrap { border-radius: 20px; overflow: hidden; height: 240px; position: relative; }
     .badge-price { position: absolute; top: 15px; right: 15px; background: white; padding: 5px 15px; border-radius: 50px; font-weight: 800; color: var(--dark); }
-
-    /* 6. Special Overlay Section */
     .special-box { position: relative; border-radius: 40px; overflow: hidden; height: 450px; }
     .special-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 35px; color: white; }
-
-    /* 7. Flash Deal (Dynamic) */
     .flash-container { background: #000; border-radius: 50px; padding: 60px; color: white; position: relative; overflow: hidden; border-left: 10px solid var(--gold); }
-    .timer-circle { width: 80px; height: 80px; border: 2px border: dashed var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
-
-    /* 8. Coupon Section */
-    .coupon-card { background: dashed 2px var(--gold); border: 2px dashed var(--gold); background: #fff9f0; border-radius: 20px; padding: 30px; text-align: center; }
-
-    /* 9. Review Section */
+    .timer-circle { width: 80px; height: 80px; border: 2px dashed var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: bold; }
+    .coupon-card { background: #fff9f0; border: 2px dashed var(--gold); border-radius: 20px; padding: 30px; text-align: center; }
     .review-card { background: white; border-radius: 30px; padding: 40px; border: 1px solid #eee; transition: 0.4s; }
     .review-card img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 20px; border: 4px solid var(--gold); }
 </style>
@@ -77,15 +50,13 @@
 <section class="py-5 bg-white">
     <div class="container py-5">
         <div class="row g-4 text-center">
-            {% for feature in features %}
-            <div class="col-md-3">
+            {% for feature in features %}<div class="col-md-3">
                 <div class="feature-card h-100">
                     <i class="{{ feature.icon_class }} feature-icon"></i>
                     <h5 class="fw-bold">{{ feature.title }}</h5>
                     <p class="small opacity-75">{{ feature.description }}</p>
                 </div>
-            </div>
-            {% endfor %}
+            </div>{% endfor %}
         </div>
     </div>
 </section>
@@ -148,8 +119,7 @@
     <div class="container py-5">
         <div class="section-title"><h2>The Royal <span>Thali</span></h2></div>
         <div class="row g-4">
-            {% for combo in combos|slice:":2" %}
-            <div class="col-lg-6">
+            {% for combo in combos|slice:":2" %}<div class="col-lg-6">
                 <div class="thali-card shadow-lg">
                     <img src="{% if combo.image %}{{ combo.image.url }}{% else %}https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600{% endif %}" class="thali-img">
                     <div class="thali-info">
@@ -162,8 +132,7 @@
                         <a href="{% url 'add_combo_to_cart' combo.id %}" class="btn btn-warning btn-sm rounded-pill mt-4">Order Now</a>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+            </div>{% endfor %}
         </div>
     </div>
 </section>
@@ -172,23 +141,14 @@
     <div class="container py-5">
         <div class="section-title"><h2 style="color: var(--green);">Healthy <span>Bites</span></h2></div>
         <div class="row g-4">
-            {% for item in healthy_items %}
-            <div class="col-lg-3 col-md-6">
+            {% for item in healthy_items %}<div class="col-lg-3 col-md-6">
                 <div class="healthy-card">
-                    {% if item.image %}
-                    <img src="{{ item.image.url }}" class="healthy-img">
-                    {% else %}
-                            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500" class="healthy-img">
-                        {% endif %}
+                    <img src="{% if item.image %}{{ item.image.url }}{% else %}https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500{% endif %}" class="healthy-img">
                     <h5 class="fw-bold">{{ item.name }}</h5>
-                    <a href="{% url 'add_to_cart' item.id %}">
-                        <button class="btn btn-outline-success rounded-pill px-4">Order Now</button>
-                    </a>
-                    <p class="text-success fw-bold">৳ {{ item.get_dynamic_price|floatformat:0 }}</p>
-                    
+                    <a href="{% url 'add_to_cart' item.id %}"><button class="btn btn-outline-success rounded-pill px-4">Order Now</button></a>
+                    <p class="text-success fw-bold mt-2">৳ {{ item.get_dynamic_price|floatformat:0 }}</p>
                 </div>
-            </div>
-            {% endfor %}
+            </div>{% endfor %}
         </div>
     </div>
 </section>
@@ -197,8 +157,7 @@
     <div class="container py-5">
         <div class="section-title"><h2>Chef's <span>Masterpieces</span></h2></div>
         <div class="row g-4">
-            {% for item in top_selling %}
-            <div class="col-lg-3 col-md-6">
+            {% for item in top_selling %}<div class="col-lg-3 col-md-6">
                 <div class="mp-card h-100">
                     <div class="mp-img-wrap">
                         <img src="{% if item.image %}{{ item.image.url }}{% endif %}" class="w-100 h-100 object-fit-cover">
@@ -209,8 +168,7 @@
                         <a href="{% url 'add_to_cart' item.id %}" class="btn btn-dark w-100 rounded-pill">Add to Cart</a>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+            </div>{% endfor %}
         </div>
     </div>
 </section>
@@ -241,8 +199,7 @@
     <div class="container">
         <div class="section-title"><h2>Today's <span>Specials</span></h2></div>
         <div class="row g-4">
-            {% for food in today_specials %}
-            <div class="col-lg-3 col-md-6">
+            {% for food in today_specials %}<div class="col-lg-3 col-md-6">
                 <div class="special-box shadow-lg">
                     <img src="{% if food.image %}{{ food.image.url }}{% endif %}" class="w-100 h-100 object-fit-cover">
                     <div class="special-overlay">
@@ -253,8 +210,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+            </div>{% endfor %}
         </div>
     </div>
 </section>
@@ -263,8 +219,7 @@
     <div class="container py-5">
         <div class="section-title"><h2>Exclusive <span>Offers</span></h2></div>
         <div class="row g-4">
-            {% for offer in offers %}
-            <div class="col-lg-3 col-md-6">
+            {% for offer in offers %}<div class="col-lg-3 col-md-6">
                 <div class="card border-0 shadow-sm rounded-4 text-center pb-4 position-relative overflow-hidden h-100">
                     <div class="bg-danger text-white position-absolute top-0 end-0 p-2 px-3 rounded-bottom-start fw-bold">{{ offer.discount_percentage }}% OFF</div>
                     <img src="{% if offer.food.image %}{{ offer.food.image.url }}{% endif %}" class="card-img-top" style="height: 200px; object-fit: cover;">
@@ -274,25 +229,20 @@
                         <a href="{% url 'add_to_cart' offer.food.id %}" class="btn btn-dark w-100 rounded-pill mt-3">Claim Now</a>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+            </div>{% endfor %}
         </div>
     </div>
 </section>
 
 <section id="reserve" class="py-5" style="background: url('https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1600') center/cover fixed; min-height: 600px; display: flex; align-items: center;">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-5">
-                <div class="bg-white p-5 rounded-5 shadow-2xl">
-                    <span class="text-warning fw-bold text-uppercase">Private Dining</span>
-                    <h2 class="playfair display-5 fw-bold my-4">Reserve Your <br>Royal Table</h2>
-                    <p class="text-muted mb-5">আমাদের এক্সক্লুসিভ ডাইনিং এরিয়াতে আপনার আসনটি নিশ্চিত করুন।</p>
-                    <a href="/reservations/reserve/" class="btn btn-dark btn-lg rounded-pill w-100 py-3 fw-bold">Book A Table</a>
-                </div>
-            </div>
+    <div class="container"><div class="row"><div class="col-lg-5">
+        <div class="bg-white p-5 rounded-5 shadow-2xl">
+            <span class="text-warning fw-bold text-uppercase">Private Dining</span>
+            <h2 class="playfair display-5 fw-bold my-4">Reserve Your <br>Royal Table</h2>
+            <p class="text-muted mb-5">আমাদের এক্সক্লুসিভ ডাইনিং এরিয়াতে আপনার আসনটি নিশ্চিত করুন।</p>
+            <a href="/reservations/reserve/" class="btn btn-dark btn-lg rounded-pill w-100 py-3 fw-bold">Book A Table</a>
         </div>
-    </div>
+    </div></div></div>
 </section>
 
 <section class="py-5 bg-white">
@@ -300,16 +250,14 @@
         <div class="section-title"><h2>Guest <span>Reviews</span></h2></div>
         <div class="swiper testimonialSwiper pb-5">
             <div class="swiper-wrapper">
-                {% for review in testimonials %}
-                <div class="swiper-slide">
+                {% for review in testimonials %}<div class="swiper-slide">
                     <div class="review-card h-100 text-center mx-2 shadow-sm">
                         <img src="{% if review.image %}{{ review.image.url }}{% else %}https://ui-avatars.com/api/?name={{ review.name }}{% endif %}">
                         <p class="fst-italic text-muted mb-4">"{{ review.review_text|truncatechars:120 }}"</p>
                         <h6 class="fw-bold mb-1">{{ review.name }}</h6>
                         <div class="text-warning small"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
                     </div>
-                </div>
-                {% endfor %}
+                </div>{% endfor %}
             </div>
             <div class="swiper-pagination"></div>
         </div>
@@ -323,28 +271,22 @@
             <a href="{% url 'blog_list' %}" class="btn btn-link text-dark fw-bold text-decoration-none border-bottom border-dark">Read All Posts</a>
         </div>
         <div class="row g-4">
-            {% for blog in blogs %}
-            <div class="col-lg-3 col-md-6">
+            {% for blog in blogs %}<div class="col-lg-3 col-md-6">
                 <div class="card border-0 rounded-4 overflow-hidden h-100 shadow-sm">
-                    <div style="height: 200px; overflow: hidden;">
-                        <img src="{% if blog.thumbnail %}{{ blog.thumbnail.url }}{% endif %}" class="w-100 h-100 object-fit-cover transition-hover">
-                    </div>
+                    <div style="height: 200px; overflow: hidden;"><img src="{% if blog.thumbnail %}{{ blog.thumbnail.url }}{% endif %}" class="w-100 h-100 object-fit-cover transition-hover"></div>
                     <div class="p-4">
                         <span class="text-warning small fw-bold">CULINARY</span>
                         <h5 class="playfair fw-bold mt-2"><a href="{% url 'blog_detail' blog.slug %}" class="text-dark text-decoration-none">{{ blog.title|truncatechars:45 }}</a></h5>
                     </div>
                 </div>
-            </div>
-            {% endfor %}
+            </div>{% endfor %}
         </div>
     </div>
 </section>
 
 {% include 'includes/footer.html' %}
-
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
-    // Flash Deal Timer
     let h=14, m=22, s=10;
     setInterval(() => {
         if(s>0) s--; else { if(m>0){ m--; s=59; } else if(h>0){ h--; m=59; s=59; } }
@@ -354,8 +296,6 @@
             document.getElementById("s-box").innerText = s.toString().padStart(2, '0');
         }
     }, 1000);
-
-    // Review Swiper
     document.addEventListener('DOMContentLoaded', () => {
         new Swiper(".testimonialSwiper", {
             slidesPerView: 1, spaceBetween: 30, loop: true, autoplay: { delay: 4000 },
@@ -364,5 +304,4 @@
         });
     });
 </script>
-
 {% endblock %}
